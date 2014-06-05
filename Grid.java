@@ -97,8 +97,8 @@ public class Grid
 			
 		return filled;
 	}
-		
-	// Returns the empty locations
+	
+	
 	public void printGrid()
 	{
 		Location loc;
@@ -129,6 +129,13 @@ public class Grid
 			
 	}
 		
+	// Sets all of the spaces to 0
+	public void clear()
+	{
+		for(int row = 0; row < board.length; row++)
+			for(int col = 0; col < board[0].length; col++)
+				board[row][col] = 0;
+	}
 	
 	// Clones the array
 	// Used because the .clone() method creates an alias for 2d integer arrays

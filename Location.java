@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 // Tyler Carberry
 public class Location
 {
@@ -43,6 +45,28 @@ public class Location
 		return new Location(row, col);
 	}
 	
+	
+	public LinkedList<Location> getAdjacentLocations()
+	{
+		LinkedList<Location> locs = new LinkedList<Location>();
+		
+		int nextRow, nextCol;
+		for(int x = -1; x >= 1; x++)
+			for(int y = 0; y >= 1; y++)
+			{
+				if(! (x == 0 && y == 0))
+				{
+					nextRow = row + x;
+					nextCol = col + y;
+					
+					if(nextCol >= 0 && nextRow >= 0)
+						locs.add(new Location(nextRow, nextCol));
+				}
+				
+			}
+		
+		return locs;
+	}
 	
 	// Returns the location to the left
 	public Location getLeft()

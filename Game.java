@@ -4,20 +4,29 @@ import java.util.*;
 // 2048
 public class Game
 {
+	// The main board the game is played on
 	private Grid board;
+	
+	// Stores the previous boards and scores
 	private Stack history;
+	
+	// The % of a 2 appearing
+	final double CHANCE_OF_2 = .90;
+	
 	private int score = 0;
-	int turnNumber;
+	int turnNumber = 0;
 	boolean quitGame = false;
+	boolean newGame = true;
+	
+	// The time the game was started
 	Date d1;
+	
+	Scanner scan = new Scanner(System.in);
 	
 	public Game()
 	{
 		// The main board the game is played on
 		board = new Grid(4,4);
-		
-		// Tracks how long the game is played for
-		d1 = new Date();
 		
 		// Keeps track of the turn number
 		turnNumber = 1;
@@ -34,9 +43,6 @@ public class Game
 		// The main board the game is played on
 		board = new Grid(rows,cols);
 		
-		// Tracks how long the game is played for
-		d1 = new Date();
-		
 		// Keeps track of the turn number
 		turnNumber = 1;
 		
@@ -49,18 +55,19 @@ public class Game
 	
 	public boolean act(String direction)
 	{	
+		// Keeps track of the start time
+		if(newGame)
+		{
+			d1 = new Date();
+			newGame = false;
+		}
+		
 		// Used to determine if any pieces moved
 		Grid lastBoard = board.clone();
 		
 		// Determines if the game is lost or quit
 		if(lost())
 			return false;
-		
-		if(direction.equalsIgnoreCase("undo") || direction.equalsIgnoreCase("back"))
-		{
-			undo();
-			return true;
-		}
 		
 		
 		// Moves the board
@@ -76,7 +83,24 @@ public class Game
 			|| direction.equalsIgnoreCase("stop") || direction.equalsIgnoreCase("quit"))
 			quit();
 		else if(direction.equalsIgnoreCase("undo") || direction.equalsIgnoreCase("back"))
+		{
 			undo();
+			return true;
+		}
+		else if(direction.equalsIgnoreCase("shuffle"))
+		{
+			shuffle();
+			turnNumber++;
+			return true;
+		}
+		else if(direction.equalsIgnoreCase("delete"))
+		{
+			
+			delete(new Location(scan.nextInt(), scan.nextInt()));
+			addRandom();
+			return true;
+		}
+		
 		else
 			// Invalid input
 			return false;
@@ -256,6 +280,34 @@ public class Game
 		}
 	}
 	
+	// Shuffles the board
+	public void shuffle()
+	{
+		LinkedList<Integer> pieces = new LinkedList<Integer>();
+		
+		for(int row = 0; row < board.getNumRows(); row++)
+			for(int col = 0; col < board.getNumCols(); col++)
+			{
+				int num = board.get(new Location(row, col));
+				if(num > 0)
+					pieces.add(num);
+			}
+		
+		board.clear();
+		LinkedList<Location> empty;
+		for(int num : pieces)
+		{
+			empty = board.getEmptyLocations();
+			board.set(empty.get((int) (Math.random() * empty.size())), num);
+		}
+	}
+	
+	// Removes the piece from the given location
+	public void delete(Location loc)
+	{
+		board.set(loc, 0);
+	}
+	
 	// Determines if the board can move right
 	public boolean canMoveRight()
 	{
@@ -290,7 +342,8 @@ public class Game
 		
 	
 	// Randomly adds a new piece to an empty space
-	// 75% add 2, 25% add 4
+	// 90% add 2, 10% add 4
+	// CHANCE_OF_2 is a final variable declared at the top
 	public void addRandom()
 	{
 		LinkedList<Location> empty = board.getEmptyLocations();
@@ -299,7 +352,7 @@ public class Game
 			return;
 		
 		int randomLoc = (int) (Math.random() * empty.size());
-		if(Math.random() > .25)
+		if(Math.random() < CHANCE_OF_2)
 			board.set(empty.get(randomLoc), 2);
 		else
 			board.set(empty.get(randomLoc), 4);
@@ -326,8 +379,6 @@ public class Game
 		}
 		return false;
 	}
-		
-	
 	
 	// Determines if the game is lost
 	public boolean lost()
@@ -375,23 +426,13 @@ public class Game
 		return true;
 	}
 	
-	// Prints the amount of tine the game was played for
-	private void printTime(Date d1)
+	// Returns the number of seconds the game was played for
+	public double timePlayed()
 	{
 		Date d2 = new Date();
-		int totalSeconds = (int)((d2.getTime() - d1.getTime()) / 1000);
-		int minutes = totalSeconds/60;
-		int seconds = totalSeconds - (minutes * 60);
+		double seconds = ((d2.getTime() - d1.getTime()) / 1000.0);
 		
-		if(minutes == 1)
-			System.out.print(minutes + " minute ");
-		if(minutes > 1)
-			System.out.print(minutes + " minutes ");
-		
-		if(seconds == 1)
-			System.out.print(seconds + " second");
-		else
-			System.out.print(seconds + " seconds");
+		return seconds;
 	}
 	
 	// Quits the game
@@ -399,6 +440,22 @@ public class Game
 	{
 		System.out.println("Game Quit");
 		quitGame = true;
+	}
+	
+	
+	public int highestPiece()
+	{
+		int highest = 0;
+		
+		for(int col = 0; col < board.getNumCols(); col++)
+		{
+			for(int row = 0; row < board.getNumRows(); row++)
+			{
+				if(board.get(new Location(row, col)) > highest)
+					highest = board.get(new Location(row, col));
+			}
+		}
+		return highest;
 	}
 	
 	public int getScore()

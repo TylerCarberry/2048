@@ -1,11 +1,21 @@
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+
+import javax.security.sasl.AuthorizeCallback;
 public class Main
 {
+	// Used for the recursive autoplay method to determine
+	// the total number of moves
 	public static int num = 0;
+	
 	static Scanner scan = new Scanner (System.in);
+	
+	// public native int find_best_move(int[][] board);
+	
 	public static void main(String[] args)
 	{
 		int input;
+		
 		
 		// Intro to game
 		System.out.println("|| --------------------------------------- ||");
@@ -50,20 +60,7 @@ public class Main
 							randomPlay(game);
 						else
 						{
-							System.out.println("Testing recursive play");
-							//System.out.println("OLD");
-							
-							/*
-							for(int i = 0; i < 10; i++)
-							{
-								recursivePlay(game, 2048);
-								System.out.println(num);
-								num = 0;
-							}
-							
-							*/
-							
-							System.out.println("\nNEW");
+							System.out.println("\nTesting the recursive play");
 							
 							for(int i = 0; i < 100; i++)
 							{
@@ -74,12 +71,16 @@ public class Main
 							
 							
 						}
-				
+			
+			
 		}
 		
 	}
 
 
+	//---------------------------------------------------------
+	// Manual Play
+	//---------------------------------------------------------
 	public static void manualPlay(Game game)
 	{
 		Scanner scan = new Scanner(System.in);
@@ -90,21 +91,38 @@ public class Main
 		while(!(game.lost()))
 		{
 			direction = scan.next();
-			game.act(direction);
-			System.out.println(game);
+			if(game.act(direction))
+				System.out.println(game);
+			else
+			{
+				System.out.println("Invalid Command");
+				System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");
+			}
 		}
 
 		System.out.println(game);
+		
+		int milliseconds = (int) (game.timePlayed() * 1000);
+		
+		int seconds = (int) (milliseconds / 1000) % 60 ;
+		int minutes = (int) (milliseconds / (1000*60));
+		milliseconds -= seconds * 60;
+		
+		
+		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milliseconds/1000.0) + " seconds");
 	}
 	
+	//---------------------------------------------------------
+	// Calls the recursive play method
+	//---------------------------------------------------------
 	public static void recursiveHelper(Game game)
 	{
-		//System.out.println("Play until which tile is reached?");
-		//System.out.println("(Values above 2048 are not recommended)");
+		System.out.println("Play until which tile is reached?");
+		System.out.println("(Values above 2048 are not recommended)");
 		int tile = scan.nextInt();
 		recursivePlayTest(game, tile, true);
-		//System.out.println("**** GAME WON ****");
-		//System.out.println("Total Number of Moves: " + num);
+		System.out.println("**** GAME WON ****");
+		System.out.println("Total Number of Moves: " + num);
 		
 	}
 	
@@ -152,16 +170,36 @@ public class Main
 	// NEW
 	public static boolean recursivePlayTest(Game game, int tile, boolean upFirst)
 	{
-		//System.out.println(game);
+		// System.out.println(game);
+		
 		Game lastTurn = game.clone();
 		num++;
 		
-		// Stops automatically after 10000 moves because most games take only 2000
-		if(num >= 10000)
+		
+		if(num % 6000 == 0)
+		{
+			//System.out.println("Current turns: " + game.getTurns());
+			//System.out.println(game);
+			
+			System.out.println("Undoing the entire game");
+			System.out.println(game.getTurns());
+			while(game.getTurns() > 1)
+				game.undo();
+			System.out.println(game.getTurns());
+			System.out.println(game);
+		}
+		
+		
+		
+		// Stops automatically after 100000 moves because most games take only 2000
+		if(num >= 15000)
 		{
 			System.out.println(game);
+			System.out.println("***** Time Limit Reached *****");
 			return true;
 		}
+		
+		/*
 		
 		if(num == 7000)
 		{
@@ -185,11 +223,12 @@ public class Main
 			//System.out.println(game);
 		}
 		
+		*/
 		
 		
 		if(game.won(tile))
 			return true;
-
+		
 		if(upFirst)
 		{
 			game.act("up");
@@ -219,7 +258,7 @@ public class Main
 		
 		game.act("right");
 		if(! (game.lost() || game.equals(lastTurn)))
-			if(recursivePlayTest(game.clone(), tile, true))
+			if(recursivePlayTest(game.clone(), tile, false))
 				return true;
 		
 		game.act("down");

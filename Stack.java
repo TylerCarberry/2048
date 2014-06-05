@@ -40,6 +40,8 @@ public class Stack
 		
 		return result;
 	}
+
 	
+
 
 }
