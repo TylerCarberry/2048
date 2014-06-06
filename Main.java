@@ -72,6 +72,31 @@ public class Main
 	public static void manualPlay(Game game)
 	{
 		Scanner scan = new Scanner(System.in);
+		String limit;
+	
+		System.out.println("Move Limit? (press enter for unlimited)");
+		limit = scan.nextLine();
+		
+		if(limit.equals(""))
+			game.setMoveLimit(-1);
+		else
+			game.setMoveLimit(Integer.parseInt(limit));
+		
+		System.out.println("Undo Limit? (press enter for unlimited)");
+		limit = scan.nextLine();
+		
+		if(limit.equals(""))
+			game.setUndoLimit(-1);
+		else
+			game.setUndoLimit(Integer.parseInt(limit));
+		
+		System.out.println("Corner Mode? (Immovable X's in corner)");
+		System.out.println("Press enter for no, anything else for yes");
+		limit = scan.nextLine();
+		
+		if(! limit.equals(""))
+			game.cornerMode();
+		
 		System.out.println(game);
 		System.out.println("Move in which direction? u/d/l/r  (stop to quit)");
 		String direction;
@@ -88,7 +113,7 @@ public class Main
 			}
 		}
 
-		System.out.println(game);
+		// System.out.println(game);
 		
 		int milliseconds = (int) (game.timePlayed() * 1000);
 		int seconds = (int) (milliseconds / 1000) % 60 ;

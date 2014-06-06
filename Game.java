@@ -24,6 +24,14 @@ public class Game
 	// Input
 	Scanner scan = new Scanner(System.in);
 	
+	// Limited number of moves
+	// -1 = unlimited
+	int movesRemaining = -1;
+	
+	// Limited number of undos
+	// -1 = unlimited
+	int undosRemaining  = -1;
+	
 	public Game()
 	{
 		// The main board the game is played on
@@ -108,11 +116,12 @@ public class Game
 		
 		// If a piece moved then increment the turn number
 		// and add a random piece to the board
-		if(!board.equals(lastBoard))
+		if(! board.equals(lastBoard))
 		{
 			turnNumber++;
 			addRandomPiece();
 			history.push(lastBoard, score);
+			movesRemaining--;
 		}
 		
 		return true;
@@ -137,7 +146,9 @@ public class Game
 	// Moves a single piece
 	private void moveRight(Location from)
 	{
-		//System.out.println("Move Right");
+		// Do not move X spaces
+		if(board.get(from) < 0) return;
+		
 		Location to = from.getRight();
 		while(board.isValid(to))
 		{
@@ -158,7 +169,6 @@ public class Game
 	
 	private void actLeft()
 	{
-		//System.out.println("Act Left");
 		Location loc;
 		for(int col = 0; col < board.getNumCols(); col++)
 		{
@@ -172,7 +182,9 @@ public class Game
 	}
 	private void moveLeft(Location from)
 	{
-		//System.out.println("Move Left");
+		// Do not move X spaces
+		if(board.get(from) < 0) return;
+		
 		Location to = from.getLeft();
 		while(board.isValid(to))
 		{
@@ -193,7 +205,6 @@ public class Game
 	
 	private void actUp()
 	{
-		//System.out.println("Act Up");
 		Location loc;
 		for(int row = 0; row < board.getNumRows(); row++)
 		{
@@ -207,7 +218,9 @@ public class Game
 	}
 	private void moveUp(Location from)
 	{
-		//System.out.println("Move Up");
+		// Do not move X spaces
+		if(board.get(from) < 0) return;
+		
 		Location to = from.getUp();
 		while(board.isValid(to))
 		{
@@ -228,7 +241,6 @@ public class Game
 	
 	private void actDown()
 	{
-		//System.out.println("Act Down");
 		Location loc;
 		for(int row = board.getNumRows()-1; row >=0; row--)
 		{
@@ -242,7 +254,9 @@ public class Game
 	}
 	private void moveDown(Location from)
 	{
-		//System.out.println("Move Down");
+		// Do not move X spaces
+		if(board.get(from) < 0) return;
+		
 		Location to = from.getDown();
 		while(board.isValid(to))
 		{
@@ -273,11 +287,14 @@ public class Game
 	// Uses a stack to store previous moves
 	public void undo()
 	{
-		if(turnNumber > 1)
+		if(turnNumber > 1 && undosRemaining != 0)
 		{
 			score = history.popScore();
 			board = history.popBoard();
 			turnNumber--;
+			undosRemaining--;
+			
+			System.out.println("Undos remaining: " + undosRemaining);
 		}
 	}
 	
@@ -308,6 +325,47 @@ public class Game
 	{
 		board.set(loc, 0);
 	}
+	
+	public void cornerMode()
+	{
+		board.clear();
+		board.set(new Location(0,0), -1);
+		board.set(new Location(0,board.getNumCols() - 1), -1);
+		board.set(new Location(board.getNumRows() - 1,0), -1);
+		board.set(new Location(board.getNumRows() - 1 ,board.getNumCols() - 1), -1);
+		addRandomPiece();
+		addRandomPiece();
+	}
+	
+	
+	// Limit the number of undos
+	// -1 = unlimited
+	public void setUndoLimit(int limit)
+	{
+		undosRemaining = limit;
+	}
+	
+	// Returns the number of undos left
+	// -1 = unlimited
+	public int getUndosRemaining()
+	{
+		return undosRemaining;
+	}
+	
+	// Limit the number of move
+	// -1 = unlimited
+	public void setMoveLimit(int limit)
+	{
+		movesRemaining = limit;
+	}
+	
+	// Returns the number of moves left
+	// -1 = unlimited
+	public int getMovesRemaining()
+	{
+		return movesRemaining;
+	}
+	
 	
 	// Determines if the board can move right
 	public boolean canMoveRight()
@@ -385,7 +443,7 @@ public class Game
 	public boolean lost()
 	{
 		// If the game is quit then the game is lost
-		if(quitGame)
+		if(quitGame || movesRemaining == 0)
 			return true;
 		
 		// If the board is not filled then the game is lost
@@ -444,7 +502,7 @@ public class Game
 	}
 	
 	
-	//
+	// The highest piece on the board
 	public int highestPiece()
 	{
 		int highest = 0;

@@ -97,37 +97,6 @@ public class Grid
 			
 		return filled;
 	}
-	
-	
-	public void printGrid()
-	{
-		Location loc;
-		for(int row = 0; row < ROWS; row++)
-		{
-			for(int col = 0; col < COLS; col++)
-			{
-				loc = new Location (row, col);
-				
-				// Even Spacing
-				// | 4  | 16 | 256|1028|
-				if(get(loc) == 0)
-					System.out.print("|    ");
-				else
-					if(get(loc) >= 1000)
-						System.out.print("|" + get(loc));
-					else
-						if(get(loc) >= 100)
-							System.out.print("| " + get(loc));
-						else
-							if(get(loc) >= 10)
-								System.out.print("| " + get(loc) + " ");
-							else
-								System.out.print("| " + get(loc) + "  ");
-			}
-			System.out.println("|");
-		}
-			
-	}
 		
 	// Sets all of the spaces to 0
 	public void clear()
@@ -158,8 +127,8 @@ public class Grid
 	{
 		return (loc.getRow() >= 0 && loc.getRow() < ROWS && loc.getCol() >= 0 && loc.getCol() < COLS);
 	}
-
-	// WORKS BUT NEED TO CHANGE
+	
+	
 	public String toString()
 	{
 		String output = "";
@@ -174,6 +143,9 @@ public class Grid
 				
 				// Even Spacing
 				// | 4  | 16 | 256|1028|
+				if(get(loc) < 0)
+					output += "|  X ";
+				else
 				if(get(loc) == 0)
 					output += "|    ";
 				else
