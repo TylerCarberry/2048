@@ -1,22 +1,17 @@
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
-
-import javax.security.sasl.AuthorizeCallback;
 public class Main
 {
 	// Used for the recursive autoplay method to determine
 	// the total number of moves
-	public static int num = 0;
+	public static int autoMoveCount = 0;
 	
 	static Scanner scan = new Scanner (System.in);
 	
-	// public native int find_best_move(int[][] board);
 	
 	public static void main(String[] args)
 	{
 		int input;
-		
-		
+			
 		// Intro to game
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println("||  Welcome to 2048 ||  By Tyler Carberry  ||");
@@ -47,34 +42,26 @@ public class Main
 			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
 			input = scan.nextInt();
 			
-			if(input == 1)
-				recursiveHelper(game);
-			else
-				if(input == 2)
-					circlePlay(game);
-				else
-					if(input == 3)
-						cornerPlay(game);
-					else
-						if(input == 4)
-							randomPlay(game);
-						else
+			switch(input)
+			{
+				case 1: recursiveHelper(game);
+						break;
+				case 2: circlePlay(game);
+						break;
+				case 3: cornerPlay(game);
+						break;
+				case 4: randomPlay(game);
+						break;
+				default:
+						System.out.println("\nTesting the recursive play");
+						for(int i = 0; i < 1000; i++)
 						{
-							System.out.println("\nTesting the recursive play");
-							
-							for(int i = 0; i < 100; i++)
-							{
-								recursivePlayTest(game, 2048, true);
-								System.out.println(num);
-								num = 0;
-							}
-							
-							
+							recursivePlay(game.clone(), game.clone(), 2048, true);
+							System.out.println(autoMoveCount);
+							autoMoveCount = 0;
 						}
-			
-			
+			}
 		}
-		
 	}
 
 
@@ -120,125 +107,60 @@ public class Main
 		System.out.println("Play until which tile is reached?");
 		System.out.println("(Values above 2048 are not recommended)");
 		int tile = scan.nextInt();
-		recursivePlayTest(game, tile, true);
+		recursivePlay(game, game, tile, true);
 		System.out.println("**** GAME WON ****");
-		System.out.println("Total Number of Moves: " + num);
+		System.out.println("Total Number of Moves: " + autoMoveCount);
 		
 	}
 	
-	// OLD
-	public static boolean recursivePlay(Game game, int tile)
+	
+	// I ran the game over 100 times with a 10,000 move limit
+	// The number of moves it took to reach 2048:
+	// Min:932   |  Q1: 1707   |  Median: 2759
+	// Q3: 5822  |  Max: 10000 |  Average: 4165
+	// When the move gets above Q3 (6000 moves) the game resets to the original
+	// The game should now take less than 12,000 moves, 94% of games
+	
+	public static boolean recursivePlay(Game game, Game original, int tile, boolean upFirst)
 	{
-		//System.out.println(game);
-		Game lastTurn = game.clone();
-		num++;
-		
-		// Stops automatically after 5000 moves because most games take only 2000
-		if(num >= 5000)
-		{
-			return true;
-		}
-		
+		System.out.println(game);
 		
 		if(game.won(tile))
 			return true;
-
-		game.act("up");
-		if(! (game.lost() || game.equals(lastTurn)))
-			if(recursivePlay(game.clone(), tile))
-				return true;
-		
-		game.act("left");
-		if(! (game.lost() || game.equals(lastTurn)))
-			if(recursivePlay(game.clone(), tile))
-				return true;
-		
-		game.act("right");
-		if(! (game.lost() || game.equals(lastTurn)))
-			if(recursivePlay(game.clone(), tile))
-				return true;
-		
-		game.act("down");
-		if(! (game.lost() || game.equals(lastTurn)))
-			if(recursivePlay(game.clone(), tile))
-				return true;
-		
-		//System.out.println("***  Undo  ***");
-		return false;
-	}
-	
-	// NEW
-	public static boolean recursivePlayTest(Game game, int tile, boolean upFirst)
-	{
-		// System.out.println(game);
 		
 		Game lastTurn = game.clone();
-		num++;
+		autoMoveCount++;
 		
 		
-		if(num % 6000 == 0)
+		// Undos the the entire game every 6000 moves
+		if(autoMoveCount % 6000 == 0)
 		{
-			//System.out.println("Current turns: " + game.getTurns());
-			//System.out.println(game);
-			
-			System.out.println("Undoing the entire game");
-			System.out.println(game.getTurns());
-			while(game.getTurns() > 1)
-				game.undo();
-			System.out.println(game.getTurns());
+			System.out.println("Undoing the game");
+			game = original.clone();
 			System.out.println(game);
 		}
 		
 		
 		
-		// Stops automatically after 100000 moves because most games take only 2000
-		if(num >= 15000)
+		// Stops automatically after 150000 moves because
+		// most games take only 2000-3000
+		if(autoMoveCount >= 15000)
 		{
-			System.out.println(game);
+			//System.out.println(game);
 			System.out.println("***** Time Limit Reached *****");
 			return true;
 		}
-		
-		/*
-		
-		if(num == 7000)
-		{
-			//System.out.println("Current turns: " + game.getTurns());
-			//System.out.println(game);
-			//System.out.println("Undoing the entire game");
-			for(int i = 0; i < game.getTurns(); i++)
-				game.undo();
-			//System.out.println(game);
-		}
-		
-		
-		
-		if(num == 3500)
-		{
-			//System.out.println("Current turns: " + game.getTurns());
-			//System.out.println(game);
-			//System.out.println("Undoing 1/3 the turns");
-			for(int i = 0; i < game.getTurns() * 2 / 3; i++)
-				game.undo();
-			//System.out.println(game);
-		}
-		
-		*/
-		
-		
-		if(game.won(tile))
-			return true;
 		
 		if(upFirst)
 		{
 			game.act("up");
 			if(! (game.lost() || game.equals(lastTurn)))
-				if(recursivePlayTest(game.clone(), tile, !upFirst))
+				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 			
 			game.act("left");
 			if(! (game.lost() || game.equals(lastTurn)))
-				if(recursivePlayTest(game.clone(), tile, !upFirst))
+				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 			
 		}
@@ -246,27 +168,27 @@ public class Main
 		{
 			game.act("left");
 			if(! (game.lost() || game.equals(lastTurn)))
-				if(recursivePlayTest(game.clone(), tile, !upFirst))
+				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 			
 			game.act("up");
 			if(! (game.lost() || game.equals(lastTurn)))
-				if(recursivePlayTest(game.clone(), tile, !upFirst))
+				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 		}
 		
 		
 		game.act("right");
 		if(! (game.lost() || game.equals(lastTurn)))
-			if(recursivePlayTest(game.clone(), tile, false))
+			if(recursivePlay(game.clone(), original, tile, false))
 				return true;
 		
 		game.act("down");
 		if(! (game.lost() || game.equals(lastTurn)))
-			if(recursivePlayTest(game.clone(), tile, false))
+			if(recursivePlay(game.clone(), original, tile, false))
 				return true;
 		
-		//System.out.println("**** Undo ****");
+		System.out.println("**** Undo ****");
 		return false;
 	}
 	
