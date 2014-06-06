@@ -10,6 +10,7 @@ public class Main
 	
 	public static void main(String[] args)
 	{
+		
 		int input;
 			
 		// Intro to game
@@ -90,11 +91,9 @@ public class Main
 		System.out.println(game);
 		
 		int milliseconds = (int) (game.timePlayed() * 1000);
-		
 		int seconds = (int) (milliseconds / 1000) % 60 ;
 		int minutes = (int) (milliseconds / (1000*60));
 		milliseconds -= seconds * 60;
-		
 		
 		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milliseconds/1000.0) + " seconds");
 	}
@@ -131,7 +130,6 @@ public class Main
 		Game lastTurn = game.clone();
 		autoMoveCount++;
 		
-		
 		// Undos the the entire game every 6000 moves
 		if(autoMoveCount % 6000 == 0)
 		{
@@ -139,8 +137,6 @@ public class Main
 			game = original.clone();
 			System.out.println(game);
 		}
-		
-		
 		
 		// Stops automatically after 150000 moves because
 		// most games take only 2000-3000
@@ -192,8 +188,6 @@ public class Main
 		return false;
 	}
 	
-
-
 	// Moves up, left, down, right until it loses and returns the final score
 	public static int circlePlay(Game game)
 	{

@@ -21,6 +21,7 @@ public class Game
 	// The time the game was started
 	Date d1;
 	
+	// Input
 	Scanner scan = new Scanner(System.in);
 	
 	public Game()
@@ -34,8 +35,8 @@ public class Game
 		history = new Stack();
 		
 		// Adds 2 pieces to the board
-		addRandom();
-		addRandom();
+		addRandomPiece();
+		addRandomPiece();
 	}
 	
 	public Game(int rows, int cols)
@@ -49,8 +50,8 @@ public class Game
 		history = new Stack();
 		
 		// Adds 2 pieces to the board
-		addRandom();
-		addRandom();
+		addRandomPiece();
+		addRandomPiece();
 	}
 	
 	public boolean act(String direction)
@@ -97,7 +98,7 @@ public class Game
 		{
 			
 			delete(new Location(scan.nextInt(), scan.nextInt()));
-			addRandom();
+			addRandomPiece();
 			return true;
 		}
 		
@@ -110,7 +111,7 @@ public class Game
 		if(!board.equals(lastBoard))
 		{
 			turnNumber++;
-			addRandom();
+			addRandomPiece();
 			history.push(lastBoard, score);
 		}
 		
@@ -344,7 +345,7 @@ public class Game
 	// Randomly adds a new piece to an empty space
 	// 90% add 2, 10% add 4
 	// CHANCE_OF_2 is a final variable declared at the top
-	public void addRandom()
+	public void addRandomPiece()
 	{
 		LinkedList<Location> empty = board.getEmptyLocations();
 		
@@ -443,10 +444,10 @@ public class Game
 	}
 	
 	
+	//
 	public int highestPiece()
 	{
 		int highest = 0;
-		
 		for(int col = 0; col < board.getNumCols(); col++)
 		{
 			for(int row = 0; row < board.getNumRows(); row++)
