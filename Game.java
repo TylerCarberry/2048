@@ -17,21 +17,23 @@ public class Game
 	private int turnNumber = 0;
 	private boolean quitGame = false;
 	private boolean newGame = true;
-	private int timeLimit;
 	
 	// The time the game was started
-	Date d1;
+	private Date d1;
 	
 	// Input
-	Scanner scan = new Scanner(System.in);
+	private Scanner scan = new Scanner(System.in);
 	
 	// Limited number of moves
 	// -1 = unlimited
-	int movesRemaining = -1;
+	private int movesRemaining = -1;
 	
 	// Limited number of undos
 	// -1 = unlimited
-	int undosRemaining  = -1;
+	private int undosRemaining  = -1;
+	
+	// The time limit in seconds before the game automatically quits
+	private int timeLimit = -1;
 	
 	public Game()
 	{
@@ -69,8 +71,10 @@ public class Game
 		if(newGame)
 		{
 			d1 = new Date();
-			activateTimeLimit();
 			newGame = false;
+			
+			if(timeLimit > 0)
+				activateTimeLimit();
 		}
 		
 		// Used to determine if any pieces moved
@@ -331,7 +335,8 @@ public class Game
 	// Stop the game automatically after x seconds
 	public void setTimeLimit(int seconds)
 	{
-		timeLimit = seconds;
+		if(seconds > 0)
+			timeLimit = seconds;
 	}
 	
 	// Precondition: timeLimit > 0
