@@ -11,12 +11,13 @@ public class Game
 	private Stack history;
 	
 	// The % of a 2 appearing
-	final double CHANCE_OF_2 = .90;
+	public final double CHANCE_OF_2 = .90;
 	
 	private int score = 0;
-	int turnNumber = 0;
-	boolean quitGame = false;
-	boolean newGame = true;
+	private int turnNumber = 0;
+	private boolean quitGame = false;
+	private boolean newGame = true;
+	private int timeLimit;
 	
 	// The time the game was started
 	Date d1;
@@ -68,6 +69,7 @@ public class Game
 		if(newGame)
 		{
 			d1 = new Date();
+			activateTimeLimit();
 			newGame = false;
 		}
 		
@@ -325,6 +327,39 @@ public class Game
 	{
 		board.set(loc, 0);
 	}
+	
+	// Stop the game automatically after x seconds
+	public void setTimeLimit(int seconds)
+	{
+		timeLimit = seconds;
+	}
+	
+	// Precondition: timeLimit > 0
+	private void activateTimeLimit()
+	{	
+		final Thread t = new Thread() {
+		    public void run()
+		    {
+		    	try
+		    	{
+		            Thread.sleep(getTimeLimit() * 1000);
+		    	}
+		    	catch (Exception e) {System.out.println(Thread.currentThread().getStackTrace()); }
+		    	
+		    	System.out.println("Time Limit Reached");
+		    	quitGame = true;
+		        
+		    }
+		};
+		
+		t.start();
+	}
+	
+	public int getTimeLimit()
+	{
+		return timeLimit;
+	}
+	
 	
 	public void cornerMode()
 	{

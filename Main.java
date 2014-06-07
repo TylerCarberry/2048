@@ -74,7 +74,7 @@ public class Main
 		Scanner scan = new Scanner(System.in);
 		String limit;
 	
-		System.out.println("Move Limit? (press enter for unlimited)");
+		System.out.println("Enter Move Limit (press enter for unlimited)");
 		limit = scan.nextLine();
 		
 		if(limit.equals(""))
@@ -82,13 +82,21 @@ public class Main
 		else
 			game.setMoveLimit(Integer.parseInt(limit));
 		
-		System.out.println("Undo Limit? (press enter for unlimited)");
+		System.out.println("Enter Undo Limit (press enter for unlimited)");
 		limit = scan.nextLine();
 		
 		if(limit.equals(""))
 			game.setUndoLimit(-1);
 		else
 			game.setUndoLimit(Integer.parseInt(limit));
+		
+		System.out.println("Enter Time Limit In Seconds (press enter for unlimited)");
+		limit = scan.nextLine();
+		
+		if(! limit.equals(""))
+			game.setTimeLimit(Integer.parseInt(limit));
+		
+		
 		
 		System.out.println("Corner Mode? (Immovable X's in corner)");
 		System.out.println("Press enter for no, anything else for yes");
