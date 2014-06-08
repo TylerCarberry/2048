@@ -16,13 +16,13 @@ public class Game
 	private int score = 0;
 	private int turnNumber = 0;
 	private boolean quitGame = false;
+	
+	// Used to start the time limit on the first move
+	// instead of when the game is created
 	private boolean newGame = true;
 	
 	// The time the game was started
 	private Date d1;
-	
-	// Input
-	private Scanner scan = new Scanner(System.in);
 	
 	// Limited number of moves
 	// -1 = unlimited
@@ -35,19 +35,10 @@ public class Game
 	// The time limit in seconds before the game automatically quits
 	private int timeLimit = -1;
 	
+	// The default game size is 4x4
 	public Game()
 	{
-		// The main board the game is played on
-		board = new Grid(4,4);
-		
-		// Keeps track of the turn number
-		turnNumber = 1;
-		
-		history = new Stack();
-		
-		// Adds 2 pieces to the board
-		addRandomPiece();
-		addRandomPiece();
+		this(4,4);
 	}
 	
 	public Game(int rows, int cols)
@@ -58,6 +49,7 @@ public class Game
 		// Keeps track of the turn number
 		turnNumber = 1;
 		
+		// Store the move history
 		history = new Stack();
 		
 		// Adds 2 pieces to the board
@@ -67,25 +59,25 @@ public class Game
 	
 	public boolean act(String direction)
 	{	
-		// Keeps track of the start time
+		// Keep track of the start time and activates the time limit
 		if(newGame)
 		{
 			d1 = new Date();
-			newGame = false;
-			
 			if(timeLimit > 0)
 				activateTimeLimit();
+			
+			newGame = false;
 		}
 		
 		// Used to determine if any pieces moved
 		Grid lastBoard = board.clone();
 		
-		// Determines if the game is lost or quit
+		// Determine if the game is lost or quit
 		if(lost())
 			return false;
 		
 		
-		// Moves the board
+		// Move the board
 		if(direction.equalsIgnoreCase("l") || direction.equalsIgnoreCase("left"))
 			actLeft();
 		else if(direction.equalsIgnoreCase("r") || direction.equalsIgnoreCase("right"))
@@ -108,14 +100,6 @@ public class Game
 			turnNumber++;
 			return true;
 		}
-		else if(direction.equalsIgnoreCase("delete"))
-		{
-			
-			delete(new Location(scan.nextInt(), scan.nextInt()));
-			addRandomPiece();
-			return true;
-		}
-		
 		else
 			// Invalid input
 			return false;
@@ -281,8 +265,9 @@ public class Game
 		}
 	}
 	
-	
-	// Takes the sum of 2 pieces and adds it to the board
+	// Precondition: from and to are valid locations with equal values
+	// Adds piece from into piece to
+	// 4 4 -> 0 8
 	private void add(Location from, Location to)
 	{
 		score += board.get(to) * 2;
@@ -300,13 +285,15 @@ public class Game
 			turnNumber--;
 			undosRemaining--;
 			
-			System.out.println("Undos remaining: " + undosRemaining);
+			if(undosRemaining >= 0)
+				System.out.println("Undos remaining: " + undosRemaining);
 		}
 	}
 	
 	// Shuffles the board
 	public void shuffle()
 	{
+		// Adds every piece > 0 to a linked list
 		LinkedList<Integer> pieces = new LinkedList<Integer>();
 		
 		for(int row = 0; row < board.getNumRows(); row++)
@@ -314,11 +301,19 @@ public class Game
 			{
 				int num = board.get(new Location(row, col));
 				if(num > 0)
+				{
 					pieces.add(num);
+					
+					// Removes the piece from the board
+					// This is used instead of board.clear() to prevent
+					// the X's from disappearing in corner mode
+					board.set(new Location(row,col), 0);
+				}
 			}
 		
-		board.clear();
 		LinkedList<Location> empty;
+		
+		// Adds every piece to a random empty location
 		for(int num : pieces)
 		{
 			empty = board.getEmptyLocations();
@@ -352,20 +347,21 @@ public class Game
 		    	catch (Exception e) {System.out.println(Thread.currentThread().getStackTrace()); }
 		    	
 		    	System.out.println("Time Limit Reached");
-		    	quitGame = true;
-		        
+		    	quitGame = true;   
 		    }
 		};
 		
 		t.start();
 	}
 	
+	// Returns the time limit
+	// This is NOT the amount of time left in the game
 	public int getTimeLimit()
 	{
 		return timeLimit;
 	}
 	
-	
+	// Places immovable X's in the corners of the board
 	public void cornerMode()
 	{
 		board.clear();
@@ -376,7 +372,6 @@ public class Game
 		addRandomPiece();
 		addRandomPiece();
 	}
-	
 	
 	// Limit the number of undos
 	// -1 = unlimited
@@ -405,40 +400,6 @@ public class Game
 	{
 		return movesRemaining;
 	}
-	
-	
-	// Determines if the board can move right
-	public boolean canMoveRight()
-	{
-		Game nextMove = clone();
-		nextMove.actRight();
-		return !(nextMove.equals(this));
-	}
-	
-	// Determines if the board can move left
-	public boolean canMoveLeft()
-	{
-		Game nextMove = clone();
-		nextMove.actLeft();
-		return !(nextMove.equals(this));
-	}
-	
-	// Determines if the board can move up
-	public boolean canMoveUp()
-	{
-		Game nextMove = clone();
-		nextMove.actUp();	
-		return !(nextMove.equals(this));
-	}
-		
-	// Determines if the board can move down
-	public boolean canMoveDown()	
-	{
-		Game nextMove = clone();
-		nextMove.actDown();
-		return !(nextMove.equals(this));
-	}
-		
 	
 	// Randomly adds a new piece to an empty space
 	// 90% add 2, 10% add 4
@@ -557,21 +518,6 @@ public class Game
 		return highest;
 	}
 	
-	public int getScore()
-	{
-		return score;
-	}
-	
-	public int getTurns()
-	{
-		return turnNumber;
-	}
-	
-	public Grid getGrid()
-	{
-		return board;
-	}
-	
 	public boolean equals(Game otherGame)
 	{
 		return board.equals(otherGame.getGrid());
@@ -585,6 +531,56 @@ public class Game
 		game.setHistory(history.clone());
 		game.setTurn(turnNumber);
 		return game;
+	}
+	
+
+	// Determines if the board can move right
+	public boolean canMoveRight()
+	{
+		Game nextMove = clone();
+		nextMove.actRight();
+		return !(nextMove.equals(this));
+	}
+	
+	// Determines if the board can move left
+	public boolean canMoveLeft()
+	{
+		Game nextMove = clone();
+		nextMove.actLeft();
+		return !(nextMove.equals(this));
+	}
+	
+	// Determines if the board can move up
+	public boolean canMoveUp()
+	{
+		Game nextMove = clone();
+		nextMove.actUp();	
+		return !(nextMove.equals(this));
+	}
+		
+	// Determines if the board can move down
+	public boolean canMoveDown()	
+	{
+		Game nextMove = clone();
+		nextMove.actDown();
+		return !(nextMove.equals(this));
+	}
+	
+	
+	
+	public int getScore()
+	{
+		return score;
+	}
+	
+	public int getTurns()
+	{
+		return turnNumber;
+	}
+	
+	public Grid getGrid()
+	{
+		return board;
 	}
 	
 	private void setTurn(int newTurn)
@@ -610,9 +606,14 @@ public class Game
 	public String toString()
 	{
 		String output = "---------------------------------------------\n";
-		output += "||  Turn #" + turnNumber + "   Score: " + score + "\n";
-		output += "---------------------------------------------\n";
-		output += board.toString();
+		output += "||  Turn #" + turnNumber + "  Score: " + score;
+		
+		if(movesRemaining >= 0)
+			output += "  Moves Left: " + movesRemaining;
+		
+		output += "\n---------------------------------------------\n";
+		output += board.toString() + "\n";
+		
 		return output;
 	}
 }

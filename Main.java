@@ -4,14 +4,13 @@ public class Main
 {
 	// Used for the recursive autoplay method to determine
 	// the total number of moves
-	public static int autoMoveCount = 0;
+	private static int autoMoveCount = 0;
 	
-	static Scanner scan = new Scanner (System.in);
-	
+	// All methods can use the scanner without declaring it each time
+	private static Scanner scan = new Scanner (System.in);
 	
 	public static void main(String[] args)
-	{
-		
+	{	
 		int input = 0;
 			
 		// Intro to game
@@ -22,14 +21,112 @@ public class Main
 		System.out.println("||  Combine similar numbers to reach 2048  ||");
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println("||                Controls                 ||");
-		System.out.println("||    Left, Right, Up, Down, Undo, Quit    ||");
+		System.out.println("||       Left, Right, Up, Down, Quit       ||");
+		System.out.println("|| --------------------------------------- ||");
+		System.out.println("||                Power Ups                ||");
+		System.out.println("||              Shuffle, Undo              ||");
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println("||                  Tips                   ||");
 		System.out.println("||        l,r,u,d can also be used         ||");
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println();
 		
-		System.out.println("Enter the dimentions of the grid (Recommended 4x4)");
+		
+		System.out.println("Press enter to start playing the default mode. \n"
+				+ "Type anything then press enter to customize the game");
+		
+		
+		if(scan.nextLine().equals(""))
+			defaultManualPlay();
+		else
+		{
+			System.out.println("Manual or Autoplay? 1/2");
+			
+			// Error trapping for manual or autoplay
+			while(input != 1 && input != 2)
+			{
+				try { input = scan.nextInt(); }
+				
+				catch(InputMismatchException e)
+				{
+					// Clears the invalid input
+					scan.next();
+				}
+				
+				if (input != 1 && input != 2)
+					System.out.println("Incorrect input. Enter 1 or 2 with no punctuation");
+			}
+			
+			if(input == 1)
+				customManualPlay();
+			else
+			{
+				input = -1;
+				System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
+				
+				// Error trapping
+				while(input > 4 || input < 1)
+				{
+					try
+					{
+						input = scan.nextInt();
+					}
+					catch(InputMismatchException e)
+					{
+						// Clear the invalid input
+						scan.next();
+					}
+					
+					if (input != 1 && input != 2)
+						System.out.println("Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
+				}
+			
+				Game game = new Game(4,4);
+				
+				switch(input)
+				{
+				
+					case 1: recursiveHelper(game);
+							break;
+					case 2: circlePlay(game);
+							break;
+					case 3: cornerPlay(game);
+							break;
+					case 4: randomPlay(game);
+							break;
+					default:
+						System.out.println("\nTesting the recursive play");
+						for(int i = 0; i < 1000; i++)
+						{
+							recursivePlay(game.clone(), game.clone(), 2048, true);
+							System.out.println(autoMoveCount);
+							autoMoveCount = 0;
+						}
+				}
+			}
+		}
+	}
+
+	//---------------------------------------------------------
+	// Create a normal game
+	// 4x4 grid with no limits
+	//---------------------------------------------------------
+	public static void defaultManualPlay()
+	{
+		Game game = new Game();
+		manualPlay(game);
+	}
+	
+	//---------------------------------------------------------
+	// Customize Manual Play
+	// Move Limit, Undo Limit, Time Limit, Corner Mode
+	//---------------------------------------------------------
+	public static void customManualPlay()
+	{
+		Scanner scan = new Scanner(System.in);
+		String limit;
+		
+		System.out.println("Enter the dimentions of the grid (Recommended 4 4)");
 		int rows = -1;
 		int cols = -1;
 		
@@ -55,80 +152,9 @@ public class Main
 		
 		Game game = new Game(rows,cols);
 		
-		System.out.println("Manual or Autoplay? 1/2");
+		scan.nextLine();
 		
-		// Error trapping for manual or autoplay
-		while(input != 1 && input != 2)
-		{
-			try { input = scan.nextInt(); }
-			
-			catch(InputMismatchException e)
-			{
-				// Clears the invalid input
-				scan.next();
-			}
-			
-			if (input != 1 && input != 2)
-				System.out.println("Incorrect input. Enter 1 or 2 with no punctuation");
-		}
-		
-		if(input == 1)
-			manualPlay(game);
-		else
-		{
-			input = -1;
-			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
-			
-			// Error trapping
-			while(input > 4 || input < 1)
-			{
-				try
-				{
-					input = scan.nextInt();
-				}
-				catch(InputMismatchException e)
-				{
-					// Clear the invalid input
-					scan.next();
-				}
-				
-				if (input != 1 && input != 2)
-					System.out.println("Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
-			}
-			
-			switch(input)
-			{
-				case 1: recursiveHelper(game);
-						break;
-				case 2: circlePlay(game);
-						break;
-				case 3: cornerPlay(game);
-						break;
-				case 4: randomPlay(game);
-						break;
-				default:
-						System.out.println("\nTesting the recursive play");
-						for(int i = 0; i < 1000; i++)
-						{
-							recursivePlay(game.clone(), game.clone(), 2048, true);
-							System.out.println(autoMoveCount);
-							autoMoveCount = 0;
-						}
-			}
-		}
-	}
-
-
-	//---------------------------------------------------------
-	// Manual Play
-	//---------------------------------------------------------
-	public static void manualPlay(Game game)
-	{
-		Scanner scan = new Scanner(System.in);
-		String limit;
-	
 		System.out.println("Enter Move Limit (press enter for unlimited)");
-		
 		limit = scan.nextLine();
 		
 		if(limit.equals(""))
@@ -143,7 +169,7 @@ public class Main
 			game.setUndoLimit(-1);
 		else
 			game.setUndoLimit(Integer.parseInt(limit));
-		
+			
 		System.out.println("Enter Time Limit In Seconds (press enter for unlimited)");
 		limit = scan.nextLine();
 		
@@ -159,10 +185,20 @@ public class Main
 		if(! limit.equals(""))
 			game.cornerMode();
 		
-		System.out.println(game);
-		System.out.println("Move in which direction? u/d/l/r  (stop to quit)");
+		manualPlay(game);
+			
+	}
+	
+	
+	//---------------------------------------------------------
+	// Manual Play
+	//---------------------------------------------------------
+	public static void manualPlay(Game game)
+	{
 		String direction;
-
+	
+		System.out.println(game);
+		
 		while(!(game.lost()))
 		{
 			direction = scan.next();
@@ -170,13 +206,14 @@ public class Main
 				System.out.println(game);
 			else
 			{
+				if(game.lost())
+					break;
+				
 				System.out.println("Invalid Command");
 				System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");
 			}
 		}
 
-		// System.out.println(game);
-		
 		int milliseconds = (int) (game.timePlayed() * 1000);
 		int seconds = (int) (milliseconds / 1000) % 60 ;
 		int minutes = (int) (milliseconds / (1000*60));
@@ -223,9 +260,9 @@ public class Main
 		autoMoveCount++;
 		
 		// Undos the the entire game every 6000 moves
-		if(autoMoveCount % 6000 == 0)
+		if(tile <= 2048 && autoMoveCount % 6000 == 0)
 		{
-			System.out.println("Undoing the game");
+			System.out.println("Reseting the game");
 			game = original.clone();
 			System.out.println(game);
 		}
@@ -234,7 +271,6 @@ public class Main
 		// most games take only 2000-3000
 		if(autoMoveCount >= 15000)
 		{
-			//System.out.println(game);
 			System.out.println("***** Time Limit Reached *****");
 			return true;
 		}
