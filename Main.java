@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Main
 {
@@ -11,7 +12,7 @@ public class Main
 	public static void main(String[] args)
 	{
 		
-		int input;
+		int input = 0;
 			
 		// Intro to game
 		System.out.println("|| --------------------------------------- ||");
@@ -28,20 +29,72 @@ public class Main
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println();
 		
-		System.out.println("Enter the dimentions of the grid (Default 4x4)");
-		int rows = scan.nextInt();
-		int cols = scan.nextInt();
+		System.out.println("Enter the dimentions of the grid (Recommended 4x4)");
+		int rows = -1;
+		int cols = -1;
+		
+		// Error trapping for the dimensions of the grid
+		while(cols < 1 || rows < 1)
+		{
+			try
+			{
+				rows = scan.nextInt();
+				cols = scan.nextInt();
+			}
+			
+			// If a string is entered instead
+			catch(InputMismatchException e)
+			{
+				// Clears the invalid input
+				scan.next();
+			}
+		
+			if (cols < 1 || rows < 1)
+				System.out.println("Incorrect input. Enter the number of rows and columns.");
+		}
+		
 		Game game = new Game(rows,cols);
 		
 		System.out.println("Manual or Autoplay? 1/2");
-		input = scan.nextInt();
+		
+		// Error trapping for manual or autoplay
+		while(input != 1 && input != 2)
+		{
+			try { input = scan.nextInt(); }
+			
+			catch(InputMismatchException e)
+			{
+				// Clears the invalid input
+				scan.next();
+			}
+			
+			if (input != 1 && input != 2)
+				System.out.println("Incorrect input. Enter 1 or 2 with no punctuation");
+		}
 		
 		if(input == 1)
 			manualPlay(game);
 		else
 		{
+			input = -1;
 			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
-			input = scan.nextInt();
+			
+			// Error trapping
+			while(input > 4 || input < 1)
+			{
+				try
+				{
+					input = scan.nextInt();
+				}
+				catch(InputMismatchException e)
+				{
+					// Clear the invalid input
+					scan.next();
+				}
+				
+				if (input != 1 && input != 2)
+					System.out.println("Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
+			}
 			
 			switch(input)
 			{
@@ -75,6 +128,7 @@ public class Main
 		String limit;
 	
 		System.out.println("Enter Move Limit (press enter for unlimited)");
+		
 		limit = scan.nextLine();
 		
 		if(limit.equals(""))
@@ -128,7 +182,12 @@ public class Main
 		int minutes = (int) (milliseconds / (1000*60));
 		milliseconds -= seconds * 60;
 		
-		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milliseconds/1000.0) + " seconds");
+		// Round the time to the nearest millisecond
+		// Prevent precision errors (0.89999999999 seconds)
+		String milli = "" + milliseconds;
+		milli = "." + milli.substring(0,3);
+		
+		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
 	}
 	
 	//---------------------------------------------------------
