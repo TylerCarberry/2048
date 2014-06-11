@@ -43,7 +43,7 @@ public class Grid
 		return (Arrays.deepEquals(board, g.getArray()));
 	}
 	
-	private void setArray(int[][] newBoard)
+	public void setArray(int[][] newBoard)
 	{
 		 board = newBoard;
 	}
@@ -68,6 +68,8 @@ public class Grid
 		return (get(loc) == 0);
 	}
 	
+	// Move the piece in location from into location to, overriding
+	// what was originally there. Set the old location to 0.
 	public void move(Location from, Location to)
 	{
 		set(to, get(from));
@@ -143,6 +145,8 @@ public class Grid
 				
 				// Even Spacing
 				// | 4  | 16 | 256|1028|
+				
+				// In corner mode the X's are represented as -1
 				if(get(loc) < 0)
 					output += "|  X ";
 				else
@@ -162,9 +166,6 @@ public class Grid
 			}
 			output+= "|\n";
 		}
-		
-		
-		
 		
 		return output;
 	}

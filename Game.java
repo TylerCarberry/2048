@@ -33,6 +33,7 @@ public class Game
 	private int undosRemaining  = -1;
 	
 	// The time limit in seconds before the game automatically quits
+	// The timer starts immediately after the first move
 	private int timeLimit = -1;
 	
 	// The default game size is 4x4
@@ -57,6 +58,7 @@ public class Game
 		addRandomPiece();
 	}
 	
+	// All moves are called through this method
 	public boolean act(String direction)
 	{	
 		// Keep track of the start time and activates the time limit
@@ -122,13 +124,17 @@ public class Game
 	// Moves all of the pieces. Calls moveRight
 	private void actRight()
 	{
-		//System.out.println("Act Right");
 		Location loc;
+		
+		// Start at the right side of the board and move left
+		// Move each peach 
 		for(int col = board.getNumCols()-1; col >=0; col--)
 			for(int row = 0; row < board.getNumRows(); row++)
 			{
 				loc = new Location(row, col);
-				if(!board.isEmpty(loc))
+				
+				// Do not move X's or 0's
+				if(board.get(loc) > 0)
 					moveRight(loc);
 			}
 	}
@@ -266,7 +272,7 @@ public class Game
 	}
 	
 	// Precondition: from and to are valid locations with equal values
-	// Adds piece from into piece to
+	// Adds piece "from" into piece "to"
 	// 4 4 -> 0 8
 	private void add(Location from, Location to)
 	{
@@ -275,16 +281,22 @@ public class Game
 		board.set(from, 0);
 	}
 	
+	// Undo the game 1 turn
 	// Uses a stack to store previous moves
 	public void undo()
 	{
 		if(turnNumber > 1 && undosRemaining != 0)
 		{
+			// Undo the score, board, and turn #
 			score = history.popScore();
 			board = history.popBoard();
 			turnNumber--;
-			undosRemaining--;
 			
+			// Use up one of the undos allowed
+			if(undosRemaining > 0)
+				undosRemaining--;
+			
+			// Print the number of undos remaining
 			if(undosRemaining >= 0)
 				System.out.println("Undos remaining: " + undosRemaining);
 		}
@@ -335,17 +347,25 @@ public class Game
 	}
 	
 	// Precondition: timeLimit > 0
+	// Is called after the first move
 	private void activateTimeLimit()
 	{	
+		// Create a new thread to quit the game
 		final Thread t = new Thread() {
 		    public void run()
 		    {
 		    	try
 		    	{
+		    		// Pause the thread for x milliseconds
+		    		// The game continues to run
 		            Thread.sleep(getTimeLimit() * 1000);
 		    	}
-		    	catch (Exception e) {System.out.println(Thread.currentThread().getStackTrace()); }
+		    	catch (Exception e)
+		    	{
+		    		System.out.println(Thread.currentThread().getStackTrace());
+		    	}
 		    	
+		    	// After the time limit is up, quit the game
 		    	System.out.println("Time Limit Reached");
 		    	quitGame = true;   
 		    }
@@ -354,14 +374,16 @@ public class Game
 		t.start();
 	}
 	
-	// Returns the time limit
-	// This is NOT the amount of time left in the game
+	// Returns the time limit in seconds
+	// This is NOT the amount of time currently left in the game, it is
+	// the total time limit.
 	public int getTimeLimit()
 	{
 		return timeLimit;
 	}
 	
 	// Places immovable X's in the corners of the board
+	// This will clear any existing pieces on the board
 	public void cornerMode()
 	{
 		board.clear();
@@ -454,7 +476,7 @@ public class Game
 		int current = -1;
 		int next;
 		
-		// Checks if two of the same number are next to each
+		// Check if two of the same number are next to each
 		// other in a row.
 		for(int row = 0; row < board.getNumRows(); row++)
 		{
@@ -469,7 +491,7 @@ public class Game
 			current = -1;
 		}
 		
-		// Checks if two of the same number are next to each
+		// Check if two of the same number are next to each
 		// other in a column.
 		for(int col = 0; col < board.getNumCols(); col++)
 		{
@@ -486,7 +508,7 @@ public class Game
 		return true;
 	}
 	
-	// Returns the number of seconds the game was played for
+	// Return the number of seconds the game was played for
 	public double timePlayed()
 	{
 		Date d2 = new Date();
@@ -495,10 +517,9 @@ public class Game
 		return seconds;
 	}
 	
-	// Quits the game
+	// Quit the game
 	public void quit()
 	{
-		System.out.println("Game Quit");
 		quitGame = true;
 	}
 	
@@ -518,11 +539,14 @@ public class Game
 		return highest;
 	}
 	
+	// Games are equal if they have the same board and score.
+	// Even if their history is different.
 	public boolean equals(Game otherGame)
 	{
-		return board.equals(otherGame.getGrid());
+		return board.equals(otherGame.getGrid()) && score == otherGame.getScore();
 	}
 	
+	// Used to avoid creating aliases
 	public Game clone()
 	{
 		Game game = new Game();
