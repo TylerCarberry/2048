@@ -119,15 +119,14 @@ public class Game
 		return true;
 	}
 	
-	// TODO: Combine the following act/move methods if possible
+	// TODO: Combine the following act methods if possible
 	
-	// Moves all of the pieces. Calls moveRight
+	// Moves all of the pieces to the right
 	private void actRight()
 	{
 		Location loc;
 		
 		// Start at the right side of the board and move left
-		// Move each peach 
 		for(int col = board.getNumCols()-1; col >=0; col--)
 			for(int row = 0; row < board.getNumRows(); row++)
 			{
@@ -135,132 +134,85 @@ public class Game
 				
 				// Do not move X's or 0's
 				if(board.get(loc) > 0)
-					moveRight(loc);
+					move(loc, Location.RIGHT);
 			}
 	}
 	
-	// Moves a single piece
-	private void moveRight(Location from)
-	{
-		// Do not move X spaces
-		if(board.get(from) < 0) return;
-		
-		Location to = from.getRight();
-		while(board.isValid(to))
-		{
-			if(board.isEmpty(to))
-			{
-				board.move(from, to);
-				from = to.clone();
-				to = to.getRight();
-			}
-			else
-			{
-				if(board.get(from) == board.get(to))
-					add(from, to);
-				return;
-			}
-		}
-	}
-	
+	// Moves all of the pieces to the left
 	private void actLeft()
 	{
 		Location loc;
+		
+		// Start at the left side of the board and move right
 		for(int col = 0; col < board.getNumCols(); col++)
 		{
 			for(int row = 0; row < board.getNumRows(); row++)
 			{
 				loc = new Location(row, col);
-				if(!board.isEmpty(loc))
-					moveLeft(loc);
-			}
-		}
-	}
-	private void moveLeft(Location from)
-	{
-		// Do not move X spaces
-		if(board.get(from) < 0) return;
-		
-		Location to = from.getLeft();
-		while(board.isValid(to))
-		{
-			if(board.isEmpty(to))
-			{
-				board.move(from, to);
-				from = to.clone();
-				to = to.getLeft();
-			}
-			else
-			{
-				if(board.get(from) == board.get(to))
-					add(from, to);
-				return;
+				
+				// Do not move X's or 0's
+				if(board.get(loc) > 0)
+					move(loc, Location.LEFT);
 			}
 		}
 	}
 	
+	// Moves all of the pieces up
 	private void actUp()
 	{
 		Location loc;
+		
+		// Start at the bottom of the board and move up
 		for(int row = 0; row < board.getNumRows(); row++)
 		{
 			for(int col = 0; col < board.getNumCols(); col++)
 			{
 				loc = new Location(row, col);
-				if(!board.isEmpty(loc))
-					moveUp(loc);
-			}
-		}
-	}
-	private void moveUp(Location from)
-	{
-		// Do not move X spaces
-		if(board.get(from) < 0) return;
-		
-		Location to = from.getUp();
-		while(board.isValid(to))
-		{
-			if(board.isEmpty(to))
-			{
-				board.move(from, to);
-				from = to.clone();
-				to = to.getUp();
-			}
-			else
-			{
-				if(board.get(from) == board.get(to))
-					add(from, to);
-				return;
+
+				// Do not move X's or 0's
+				if(board.get(loc) > 0)
+					move(loc, Location.UP);
 			}
 		}
 	}
 	
+	// Moves all of the pieces down
 	private void actDown()
 	{
 		Location loc;
+		
+		// Start at the top side of the board and move down
 		for(int row = board.getNumRows()-1; row >=0; row--)
 		{
 			for(int col = 0; col < board.getNumCols(); col++)
 			{
 				loc = new Location(row, col);
-				if(!board.isEmpty(loc))
-					moveDown(loc);
+
+				// Do not move X's or 0's
+				if(board.get(loc) > 0)
+					move(loc, Location.DOWN);
 			}
 		}
 	}
-	private void moveDown(Location from)
+	
+	// Move a single piece all of the way in a given direction
+	// Will combine with a piece of the same value
+	
+	// Precondition: direction is called using the final
+	// variables in the location class
+	private void move(Location from, int direction)
 	{
 		// Do not move X spaces
 		if(board.get(from) < 0) return;
-		
-		Location to = from.getDown();
+				
+		Location to = from.getAdjacent(direction);
 		while(board.isValid(to))
 		{
 			if(board.isEmpty(to))
 			{
 				board.move(from, to);
 				from = to.clone();
-				to = to.getDown();
+				to = to.getAdjacent(direction);
 			}
 			else
 			{
@@ -270,6 +222,8 @@ public class Game
 			}
 		}
 	}
+		
+		
 	
 	// Precondition: from and to are valid locations with equal values
 	// Adds piece "from" into piece "to"
@@ -375,8 +329,8 @@ public class Game
 	}
 	
 	// Returns the time limit in seconds
-	// This is NOT the amount of time currently left in the game, it is
-	// the total time limit.
+	// This is NOT the amount of time currently left in the game,
+	// it is the total time limit.
 	public int getTimeLimit()
 	{
 		return timeLimit;
@@ -627,6 +581,14 @@ public class Game
 		history = newHistory.clone();
 	}
 	
+	/* Print the board in the form:
+	---------------------------------------------
+	||  Turn #8  Score: 20  Moves Left: 3
+	---------------------------------------------
+	| 8  |    | 2  |    |
+	| 4  |    |    |    |
+	| 2  |    |    | 2  |
+	|    |    |    |    |		*/
 	public String toString()
 	{
 		String output = "---------------------------------------------\n";

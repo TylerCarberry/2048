@@ -3,6 +3,12 @@ import java.util.LinkedList;
 // Tyler Carberry
 public class Location
 {
+	
+	public final static int UP = 0;
+	public final static int RIGHT = 1;
+	public final static int DOWN = 2;
+	public final static int LEFT = 3;
+	
 	int row, col;
 	
 	// Constructor
@@ -95,6 +101,23 @@ public class Location
 		Location down = new Location(getRow()+1, getCol());
 		return down;
 	}
+	
+	// Return the location in the given direction
+	// Use the final variables UP, RIGHT, DOWN, LEFT
+	public Location getAdjacent(int direction)
+	{
+		switch(direction)
+		{
+			case UP: return getUp();
+			case RIGHT: return getRight();
+			case DOWN: return getDown();
+			case LEFT: return getLeft();
+			
+			default: return null;
+		
+		}
+	}
+	
 	
 	public String toString()
 	{
