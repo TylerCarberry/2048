@@ -1,6 +1,6 @@
 // Tyler Carberry
 import java.util.*;
-public class Grid
+public class Grid implements Cloneable
 {
 	private int[][] board;
 	private final int ROWS;
@@ -146,24 +146,25 @@ public class Grid
 				// Even Spacing
 				// | 4  | 16 | 256|1028|
 				
-				// In corner mode the X's are represented as -1
-				if(get(loc) < 0)
-					output += "|  X ";
-				else
-				if(get(loc) == 0)
+				// In X tile mode the X tile is represented as -2
+				if(get(loc) == -2)
+					output += "|  x ";
+				// In corner mode the blocks are represented as -1
+				else if(get(loc) == -1)
+					output += "|XXXX";
+				else if(get(loc) == 0)
 					output += "|    ";
+				else if(get(loc) >= 1000)
+					output += "|" + get(loc);
+				else if(get(loc) >= 100)
+					output += "| " + get(loc);
+				else if(get(loc) >= 10)
+					output += "| " + get(loc) + " ";
 				else
-					if(get(loc) >= 1000)
-						output += "|" + get(loc);
-					else
-						if(get(loc) >= 100)
-							output += "| " + get(loc);
-						else
-							if(get(loc) >= 10)
-								output += "| " + get(loc) + " ";
-							else
-								output += "| " + get(loc) + "  ";
+					output += "| " + get(loc) + "  ";
+			
 			}
+			
 			output+= "|\n";
 		}
 		

@@ -10,7 +10,7 @@ public class Game
 	// Stores the previous boards and scores
 	private Stack history;
 	
-	// The % of a 2 appearing
+	// The chance of a 2 appearing
 	public final double CHANCE_OF_2 = .90;
 	
 	private int score = 0;
@@ -120,7 +120,7 @@ public class Game
 	}
 	
 	// TODO: Combine the following act methods if possible
-	
+		
 	// Moves all of the pieces to the right
 	private void actRight()
 	{
@@ -131,10 +131,7 @@ public class Game
 			for(int row = 0; row < board.getNumRows(); row++)
 			{
 				loc = new Location(row, col);
-				
-				// Do not move X's or 0's
-				if(board.get(loc) > 0)
-					move(loc, Location.RIGHT);
+				move(loc, Location.RIGHT);
 			}
 	}
 	
@@ -149,10 +146,7 @@ public class Game
 			for(int row = 0; row < board.getNumRows(); row++)
 			{
 				loc = new Location(row, col);
-				
-				// Do not move X's or 0's
-				if(board.get(loc) > 0)
-					move(loc, Location.LEFT);
+				move(loc, Location.LEFT);
 			}
 		}
 	}
@@ -162,16 +156,13 @@ public class Game
 	{
 		Location loc;
 		
-		// Start at the bottom of the board and move up
+		// Start at the top of the board and move down
 		for(int row = 0; row < board.getNumRows(); row++)
 		{
 			for(int col = 0; col < board.getNumCols(); col++)
 			{
 				loc = new Location(row, col);
-
-				// Do not move X's or 0's
-				if(board.get(loc) > 0)
-					move(loc, Location.UP);
+				move(loc, Location.UP);
 			}
 		}
 	}
@@ -181,16 +172,13 @@ public class Game
 	{
 		Location loc;
 		
-		// Start at the top side of the board and move down
+		// Start at the bottom side of the board and move up
 		for(int row = board.getNumRows()-1; row >=0; row--)
 		{
 			for(int col = 0; col < board.getNumCols(); col++)
 			{
 				loc = new Location(row, col);
-
-				// Do not move X's or 0's
-				if(board.get(loc) > 0)
-					move(loc, Location.DOWN);
+				move(loc, Location.DOWN);
 			}
 		}
 	}
@@ -202,20 +190,24 @@ public class Game
 	// variables in the location class
 	private void move(Location from, int direction)
 	{
-		// Do not move X spaces
-		if(board.get(from) < 0) return;
+		// Do not move X spaces or 0 spaces
+		if(board.get(from) == -1 || board.get(from) == 0) return;
 				
 		Location to = from.getAdjacent(direction);
 		while(board.isValid(to))
 		{
+			// If the new position is empty, move
 			if(board.isEmpty(to))
 			{
 				board.move(from, to);
 				from = to.clone();
 				to = to.getAdjacent(direction);
 			}
+			
+			// If the new position has a piece
 			else
 			{
+				// If they have the same value, combine
 				if(board.get(from) == board.get(to))
 					add(from, to);
 				return;
@@ -256,7 +248,7 @@ public class Game
 		}
 	}
 	
-	// Shuffles the board
+	// Shuffle the board
 	public void shuffle()
 	{
 		// Adds every piece > 0 to a linked list
@@ -287,7 +279,7 @@ public class Game
 		}
 	}
 	
-	// Removes the piece from the given location
+	// Remove the piece from the given location
 	public void delete(Location loc)
 	{
 		board.set(loc, 0);
@@ -316,7 +308,8 @@ public class Game
 		    	}
 		    	catch (Exception e)
 		    	{
-		    		System.out.println(Thread.currentThread().getStackTrace());
+		    		System.err.println(e);
+		    		System.err.println(Thread.currentThread().getStackTrace());
 		    	}
 		    	
 		    	// After the time limit is up, quit the game
@@ -348,6 +341,19 @@ public class Game
 		addRandomPiece();
 		addRandomPiece();
 	}
+	
+	// Places an X on the board that can move but not combine
+	// This will clear any existing pieces on the board
+	public void XMode()
+	{
+		board.clear();
+		board.set(new Location(0,0), -2);
+		addRandomPiece();
+		addRandomPiece();
+	}
+		
+		
+	
 	
 	// Limit the number of undos
 	// -1 = unlimited
@@ -543,7 +549,6 @@ public class Game
 		nextMove.actDown();
 		return !(nextMove.equals(this));
 	}
-	
 	
 	
 	public int getScore()

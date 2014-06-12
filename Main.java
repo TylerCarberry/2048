@@ -185,6 +185,18 @@ public class Main
 		if(! limit.equals(""))
 			game.cornerMode();
 		
+		// A game cannot be Corner Mode and X Mode at the same time
+		else
+		{	
+			System.out.println("X Mode? (A movable X that cannot be combined)");
+			System.out.println("Press enter for no, anything else for yes");
+			limit = scan.nextLine();
+			
+			if(! limit.equals(""))
+				game.XMode();
+		
+		}
+		
 		manualPlay(game);
 			
 	}
@@ -225,6 +237,10 @@ public class Main
 		milli = "." + milli.substring(0,3);
 		
 		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
+	
+		// This is needed to stop the game even if the time limit is not up
+		// The 0 means that there were no errors
+		System.exit(0);
 	}
 	
 	//---------------------------------------------------------

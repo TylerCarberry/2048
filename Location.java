@@ -1,7 +1,7 @@
 import java.util.LinkedList;
 
 // Tyler Carberry
-public class Location
+public class Location implements Cloneable
 {
 	
 	public final static int UP = 0;
@@ -51,7 +51,8 @@ public class Location
 		return new Location(row, col);
 	}
 	
-	
+	// Returns a linked list of valid adjacent locations
+	// Not the diagonals
 	public LinkedList<Location> getAdjacentLocations()
 	{
 		LinkedList<Location> locs = new LinkedList<Location>();
@@ -118,7 +119,7 @@ public class Location
 		}
 	}
 	
-	
+	// Print the location in the form 2,3
 	public String toString()
 	{
 		return row + "," + col;

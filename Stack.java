@@ -3,7 +3,7 @@
 // Stores the history of the game board and score
 
 import java.util.LinkedList;
-public class Stack
+public class Stack implements Cloneable
 {
 	LinkedList<Grid> stackBoard;
 	LinkedList<Integer> stackScore;
