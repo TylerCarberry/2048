@@ -59,62 +59,9 @@ public class Game
 		addRandomPiece();
 	}
 	
-	// All moves are called through this method
-	public boolean act(String direction)
-	{	
-		// Keep track of the start time and activates the time limit
-		if(newGame)
-		{
-			d1 = new Date();
-			if(timeLimit > 0)
-				activateTimeLimit();
-			
-			newGame = false;
-		}
-		
-		// Used to determine if any pieces moved
-		Grid lastBoard = board.clone();
-		
-		// Determine if the game is lost or quit
-		if(lost())
-			return false;
-		
-		
-		// Move the board
-		if(direction.equalsIgnoreCase("l") || direction.equalsIgnoreCase("left"))
-			act(Location.LEFT);
-		else if(direction.equalsIgnoreCase("r") || direction.equalsIgnoreCase("right"))
-			act(Location.RIGHT);
-		else if(direction.equalsIgnoreCase("u") || direction.equalsIgnoreCase("up"))
-			act(Location.UP);
-		else if(direction.equalsIgnoreCase("d") || direction.equalsIgnoreCase("down"))
-			act(Location.DOWN);
-		else if(direction.equalsIgnoreCase("x") || direction.equalsIgnoreCase("exit")
-			|| direction.equalsIgnoreCase("stop") || direction.equalsIgnoreCase("quit"))
-			quit();
-		else if(direction.equalsIgnoreCase("undo") || direction.equalsIgnoreCase("back"))
-		{
-			undo();
-			return true;
-		}
-		else
-			// Invalid input
-			return false;
-		
-		// If a piece moved then increment the turn number
-		// and add a random piece to the board
-		if(! board.equals(lastBoard))
-		{
-			turnNumber++;
-			addRandomPiece();
-			history.push(lastBoard, score);
-			movesRemaining--;
-		}
-		
-		return true;
-	}
-	
 	// Moves the entire board in the given direction
+	// Precondition: direction is called using the final
+	// variables in the location class
 	public void act(int direction)
 	{
 		// Don't move if the game is already lost or quit

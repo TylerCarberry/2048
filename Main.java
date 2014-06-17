@@ -310,12 +310,12 @@ public class Main
 		
 		if(upFirst)
 		{
-			game.act("up");
+			game.act(Location.UP);
 			if(! (game.lost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 			
-			game.act("left");
+			game.act(Location.LEFT);
 			if(! (game.lost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
@@ -323,24 +323,24 @@ public class Main
 		}
 		else
 		{
-			game.act("left");
+			game.act(Location.LEFT);
 			if(! (game.lost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 			
-			game.act("up");
+			game.act(Location.UP);
 			if(! (game.lost() || game.equals(lastTurn)))
 				if(recursivePlay(game.clone(), original, tile, !upFirst))
 					return true;
 		}
 		
 		
-		game.act("right");
+		game.act(Location.RIGHT);
 		if(! (game.lost() || game.equals(lastTurn)))
 			if(recursivePlay(game.clone(), original, tile, false))
 				return true;
 		
-		game.act("down");
+		game.act(Location.DOWN);
 		if(! (game.lost() || game.equals(lastTurn)))
 			if(recursivePlay(game.clone(), original, tile, false))
 				return true;
@@ -356,16 +356,16 @@ public class Main
 		{
 			System.out.println(game);
 			System.out.println("Moving up");
-			game.act("up");
+			game.act(Location.UP);
 			System.out.println(game);
 			System.out.println("Moving left");
-			game.act("left");
+			game.act(Location.LEFT);
 			System.out.println(game);
 			System.out.println("Moving down");
-			game.act("down");
+			game.act(Location.DOWN);
 			System.out.println(game);
 			System.out.println("Moving right");
-			game.act("right");
+			game.act(Location.RIGHT);
 		}
 		System.out.println(game);
 		return game.getScore();
@@ -384,23 +384,23 @@ public class Main
 				if(num > .75)
 				{
 					System.out.println("Acting up");
-					game.act("up");
+					game.act(Location.UP);
 				}
 				else
 				{
 					System.out.println("Acting left");
-					game.act("left");
+					game.act(Location.LEFT);
 				}
 			else
 				if(num > .25)
 				{
 					System.out.println("Acting down");
-					game.act("down");
+					game.act(Location.DOWN);
 				}
 				else
 				{
 					System.out.println("Acting right");
-					game.act("right");
+					game.act(Location.RIGHT);
 				}
 		}
 		return game.getScore();
@@ -419,19 +419,19 @@ public class Main
 				while(game.canMove(Location.UP) || game.canMove(Location.LEFT))
 				{
 					System.out.println("Acting up");
-					game.act("u");
+					game.act(Location.UP);
 					System.out.println(game);
 					
 					System.out.println("Acting left");
-					game.act("l");
+					game.act(Location.LEFT);
 					System.out.println(game);
 				}
 				System.out.println("Acting right");
-				game.act("r");
+				game.act(Location.RIGHT);
 				System.out.println(game);
 			}
 			System.out.println("Acting down");
-			game.act("d");
+			game.act(Location.DOWN);
 			System.out.println(game);
 
 		}
