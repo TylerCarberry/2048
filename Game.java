@@ -1,6 +1,8 @@
-// Tyler Carberry
-// 2048
-// The main code of the game 2048
+/**
+ * @author Tyler Carberry
+ * 2048
+ * The main code of the game 2048
+ */
 
 import java.util.*;
 public class Game
@@ -37,12 +39,19 @@ public class Game
 	// The timer starts immediately after the first move
 	private int timeLimit = -1;
 	
-	// The default game size is 4x4
+	/**
+	 * Creates a default game with the size 4x4
+	 */
 	public Game()
 	{
 		this(4,4);
 	}
 	
+	
+	/**
+	 * @param rows The number of rows in the game
+	 * @param cols The number of columns in the game
+	 */
 	public Game(int rows, int cols)
 	{
 		// The main board the game is played on
@@ -59,9 +68,10 @@ public class Game
 		addRandomPiece();
 	}
 	
-	// Moves the entire board in the given direction
-	// Precondition: direction is called using the final
-	// variables in the location class
+	/**
+	 * Moves the entire board in the given direction
+	 * @param direction Called using a final variable in the location class
+	*/
 	public void act(int direction)
 	{
 		// Don't move if the game is already lost or quit
@@ -95,11 +105,12 @@ public class Game
 		
 	}
 	
-	// Move a single piece all of the way in a given direction
-	// Will combine with a piece of the same value
-	
-	// Precondition: direction is called using the final
-	// variables in the location class
+	/** 
+	 * Move a single piece all of the way in a given direction
+	 * Will combine with a piece of the same value
+	 * @param from The location of he piece to move
+	 * @param direction Called using a final variable in the location class
+	 */
 	private void move(Location from, int direction)
 	{
 		// Do not move X spaces or 0 spaces
@@ -129,9 +140,12 @@ public class Game
 		
 		
 	
-	// Precondition: from and to are valid locations with equal values
-	// Adds piece "from" into piece "to"
-	// 4 4 -> 0 8
+	/**
+	 *  Adds piece "from" into piece "to", 4 4 -> 0 8
+	 * Precondition: from and to are valid locations with equal values
+	 * @param from The piece to move
+	 * @param to The destination of the piece
+	*/
 	private void add(Location from, Location to)
 	{
 		score += board.get(to) * 2;
@@ -139,8 +153,10 @@ public class Game
 		board.set(from, 0);
 	}
 	
-	// Stores the starting game time and activates the time limit after
-	// the first move instead of when the game is created
+	/** 
+	 * Stores the starting game time and activates the time limit after
+	 * the first move instead of when the game is created
+	 */
 	private void madeFirstMove()
 	{
 		d1 = new Date();
@@ -151,8 +167,10 @@ public class Game
 	}
 	
 	
-	// Undo the game 1 turn
-	// Uses a stack to store previous moves
+	/**
+	 * Undo the game 1 turn 
+	 * Uses a stack to store previous moves
+	 */
 	public void undo()
 	{
 		if(turnNumber > 1 && undosRemaining != 0)
@@ -172,7 +190,9 @@ public class Game
 		}
 	}
 	
-	// Shuffle the board
+	/**
+	 * Shuffle the board
+	 */
 	public void shuffle()
 	{
 		// If this is the game's first move, keep track of
@@ -211,21 +231,30 @@ public class Game
 		turnNumber++;
 	}
 	
-	// Remove the piece from the given location
+	/**
+	 * Remove the piece from the given location
+	 * @param loc The location to remove
+	 */
 	public void delete(Location loc)
 	{
 		board.set(loc, 0);
 	}
 	
-	// Stop the game automatically after x seconds
+	/**
+	 * Stop the game automatically after a time limit
+	 * @param seconds The time limit in seconds
+	 */
 	public void setTimeLimit(int seconds)
 	{
 		if(seconds > 0)
 			timeLimit = seconds;
 	}
 	
-	// Precondition: timeLimit > 0
-	// Is called after the first move
+	/**
+	 * Starts the time limit
+	 * Is called after the first move
+	 * Precondition timeLimit > 0
+	 * */
 	private void activateTimeLimit()
 	{	
 		// Create a new thread to quit the game
@@ -253,16 +282,21 @@ public class Game
 		t.start();
 	}
 	
-	// Returns the time limit in seconds
-	// This is NOT the amount of time currently left in the game,
-	// it is the total time limit.
+	/**
+	 * @return the time limit in seconds
+	 * This is NOT the amount of time currently left in the game, 
+	 * it is the total time limit.
+	 */
 	public int getTimeLimit()
 	{
 		return timeLimit;
 	}
 	
-	// Places immovable X's in the corners of the board
-	// This will clear any existing pieces on the board
+	/**
+	 * Places immovable X's in the corners of the board
+	 * This will clear any existing pieces on the board
+	 * Corner mode and XMode can not be in effect at the same time
+	 */
 	public void cornerMode()
 	{
 		board.clear();
@@ -274,8 +308,11 @@ public class Game
 		addRandomPiece();
 	}
 	
-	// Places an X on the board that can move but not combine
-	// This will clear any existing pieces on the board
+	/**
+	 * Places an X on the board that can move but not combine 
+	 * This will clear any existing pieces on the board
+	 * Corner mode and XMode can not be in effect at the same time
+	 */
 	public void XMode()
 	{
 		board.clear();
@@ -284,37 +321,51 @@ public class Game
 		addRandomPiece();
 	}
 	
-	// Limit the number of undos
-	// -1 = unlimited
+	/**
+	 *  Limit the number of undos
+	 * -1 = unlimited
+	 * @param limit The new limit of undos
+	 * This overrides the previous limit, does not add to it
+	 */
 	public void setUndoLimit(int limit)
 	{
 		undosRemaining = limit;
 	}
 	
-	// Returns the number of undos left
-	// -1 = unlimited
+	/**
+	 * @return The number of undos left
+	 * -1 = unlimited
+	 */
 	public int getUndosRemaining()
 	{
 		return undosRemaining;
 	}
 	
-	// Limit the number of move
-	// -1 = unlimited
+	/**
+	 * Limit the number of moves
+	 * -1 = unlimited
+	 * @param limit The new limit of moves
+	 * This overrides the previous limit, does not add to it
+	 */
 	public void setMoveLimit(int limit)
 	{
 		movesRemaining = limit;
 	}
 	
-	// Returns the number of moves left
-	// -1 = unlimited
+	/**
+	 * @return The number of moves left
+	 * -1 = unlimited
+	 */
 	public int getMovesRemaining()
 	{
 		return movesRemaining;
 	}
 	
-	// Randomly adds a new piece to an empty space
-	// 90% add 2, 10% add 4
-	// CHANCE_OF_2 is a final variable declared at the top
+	/**
+	 * Randomly adds a new piece to an empty space
+	 * 90% add 2, 10% add 4
+	 * CHANCE_OF_2 is a final variable declared at the top
+	 */
 	public void addRandomPiece()
 	{
 		LinkedList<Location> empty = board.getEmptyLocations();
@@ -329,13 +380,20 @@ public class Game
 			board.set(empty.get(randomLoc), 4);
 	}
 	
-	// A game is won if there is a 2048 tile or greater
+	/**
+	 * @return Whether or not the game is won
+	 * A game is won if there is a 2048 tile or greater
+	 */
 	public boolean won()
 	{
 		return won(2048);
 	}
 	
-	// A game is won if a tile is >= winningTile
+	
+	/**
+	 * @param winningTile The target tile
+	 * @return If a tile is >= winningTile
+	 */
 	public boolean won(int winningTile)
 	{
 		Location loc;
@@ -351,7 +409,9 @@ public class Game
 		return false;
 	}
 	
-	// Determines if the game is lost
+	/**
+	 * @return If the game is lost
+	 */
 	public boolean lost()
 	{
 		// If the game is quit then the game is lost
@@ -397,7 +457,9 @@ public class Game
 		return true;
 	}
 	
-	// Return the number of seconds the game was played for
+	/**
+	 * @return the number of seconds the game was played for
+	 */
 	public double timePlayed()
 	{
 		Date d2 = new Date();
@@ -406,14 +468,18 @@ public class Game
 		return seconds;
 	}
 	
-	// Quit the game
+	/**
+	 *  Quit the game
+	 */
 	public void quit()
 	{
 		quitGame = true;
 	}
 	
 	
-	// The highest piece on the board
+	/**
+	 * @return The highest piece on the board
+	 */
 	public int highestPiece()
 	{
 		int highest = 0;
@@ -428,14 +494,21 @@ public class Game
 		return highest;
 	}
 	
-	// Games are equal if they have the same board and score.
-	// Even if their history is different.
+	/**
+	 * @param otherGame The other game to check
+	 * @return If the games are equal
+	 * Games are equal if they have the same board and score.
+	 * Even if their history is different.
+	 */
 	public boolean equals(Game otherGame)
 	{
 		return board.equals(otherGame.getGrid()) && score == otherGame.getScore();
 	}
 	
-	// Used to avoid creating aliases
+	/**
+	 * Used to avoid creating aliases
+	 * @return A clone of the game
+	 */
 	public Game clone()
 	{
 		Game game = new Game();
@@ -447,8 +520,10 @@ public class Game
 	}
 	
 
-	// Precondition: direction is called using the final
-	// variables in the location class
+	/**
+	 * @param direction Called using the final variables in the location class
+	 * @return If the game can move in the given direction
+	 */
 	public boolean canMove(int direction)
 	{
 		Game nextMove = clone();
@@ -456,16 +531,25 @@ public class Game
 		return !(nextMove.equals(this));
 	}
 	
+	/**
+	 * @return The score of the game
+	 */
 	public int getScore()
 	{
 		return score;
 	}
 	
+	/**
+	 * @return The current turn number of the game
+	 */
 	public int getTurns()
 	{
 		return turnNumber;
 	}
 	
+	/**
+	 * @return The grid of the game
+	 */
 	public Grid getGrid()
 	{
 		return board;
@@ -491,7 +575,7 @@ public class Game
 		history = newHistory.clone();
 	}
 	
-	/* Print the board in the form:
+	/** @return a string of the game in the form:
 	---------------------------------------------
 	||  Turn #8  Score: 20  Moves Left: 3
 	---------------------------------------------

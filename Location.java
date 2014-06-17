@@ -1,6 +1,10 @@
-import java.util.LinkedList;
+/** 
+ * @author Tyler Carberry
+ * Location
+ * Represents each piece on the board
+ */
 
-// Tyler Carberry
+import java.util.LinkedList;
 public class Location implements Cloneable
 {
 	
@@ -11,26 +15,37 @@ public class Location implements Cloneable
 	
 	int row, col;
 	
-	// Constructor
+	/**
+	 * Constructor: every location has a row and column
+	 * @param rowNum The row number of the location
+	 * @param colNum The column number of the location
+	 */
 	public Location(int rowNum, int colNum)
 	{
 		row = rowNum;
 		col = colNum;
 	}
 	
-	// Returns the row
+	/**
+	 * @return The row of the location
+	 */
 	public int getRow()
 	{
 		return row;
 	}
 	
-	// Returns the column
+	/**
+	 * @return The column of the location
+	 */
 	public int getCol()
 	{
 		return col;
 	}
 	
-	// Sets the row and returns the previous value
+	/** 
+	 * @param newRow The new row value
+	 * @return The previous row value
+	 */
 	public int setRow(int newRow)
 	{
 		int temp = row;
@@ -38,7 +53,10 @@ public class Location implements Cloneable
 		return temp;
 	}
 	
-	// Sets the column and returns the previous value
+	/**
+	 * @param newCol The new column value
+	 * @return The previous column value
+	 */
 	public int setCol(int newCol)
 	{
 		int temp = col;
@@ -51,8 +69,10 @@ public class Location implements Cloneable
 		return new Location(row, col);
 	}
 	
-	// Returns a linked list of valid adjacent locations
-	// Not the diagonals
+	/**
+	 * @return a linked list of valid adjacent locations
+	 * Not diagonals
+	 */
 	public LinkedList<Location> getAdjacentLocations()
 	{
 		LinkedList<Location> locs = new LinkedList<Location>();
@@ -69,42 +89,52 @@ public class Location implements Cloneable
 					if(nextCol >= 0 && nextRow >= 0)
 						locs.add(new Location(nextRow, nextCol));
 				}
-				
 			}
 		
 		return locs;
 	}
 	
-	// Returns the location to the left
+	/** 
+	 * @return The location to the left
+	*/
 	public Location getLeft()
 	{
 		Location left = new Location(getRow(), getCol()-1);
 		return left;
 	}
 	
-	// Returns the location to the right
+	/** 
+	 * @return The location to the right
+	*/
 	public Location getRight()
 	{
 		Location right = new Location(getRow(), getCol()+1);
 		return right;
 	}
 	
-	// Returns the location up
+	/** 
+	 * @return The location up
+	*/
 	public Location getUp()
 	{
 		Location up = new Location(getRow()-1, getCol());
 		return up;
 	}
 	
-	// Returns the location down
+	/** 
+	 * @return The location down
+	*/
 	public Location getDown()
 	{
 		Location down = new Location(getRow()+1, getCol());
 		return down;
 	}
 	
-	// Return the location in the given direction
-	// Use the final variables UP, RIGHT, DOWN, LEFT
+	/** Return the location in the given direction
+	 * @param direction The direction of the location to return
+	 * Precondition: direction is a final variable declared in location class
+	 * @return The location in the given direction
+	 */
 	public Location getAdjacent(int direction)
 	{
 		switch(direction)
@@ -119,7 +149,9 @@ public class Location implements Cloneable
 		}
 	}
 	
-	// Print the location in the form 2,3
+	/**
+	 * @return The location in the form 2,3
+	 */
 	public String toString()
 	{
 		return row + "," + col;

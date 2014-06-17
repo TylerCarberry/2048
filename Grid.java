@@ -4,32 +4,39 @@ import java.util.*;
 public class Grid implements Cloneable
 {
 	private int[][] board;
-	private final int ROWS;
-	private final int COLS;
 	
-	// Constructor
+	/** Constructor
+	 * @param rows The number of rows in the grid
+	 * @param columns The number of columns in the grid
+	 */
 	public Grid (int rows, int columns)
 	{
-		ROWS = rows;
-		COLS = columns;
 		board = new int[rows][columns];
 	}
 	
-	public Grid(int[][] grid)
+	/**
+	 * Creates a grid from a 2d array
+	 * @param array The array that the grid is created from
+	 */
+	public Grid(int[][] array)
 	{
-		board = grid;
-		ROWS = grid.length;
-		COLS = grid[0].length;
+		board = array;
 	}
 	
-	
-	// Returns the variable at the position
+	/**
+	 * @param loc The location to get
+	 * @return The value at that location
+	 */
 	public int get(Location loc)
 	{
 		return board[loc.getRow()][loc.getCol()];
 	}
 	
-	// Sets the object and returns the previous value
+	/**
+	 * @param loc The location to change
+	 * @param newObject The new value of the location
+	 * @return The old value at the location
+	 */
 	public int set(Location loc, int newObject)
 	{
 		int temp = get(loc);
@@ -37,13 +44,19 @@ public class Grid implements Cloneable
 		return temp;
 	}
 	
+	/**
+	 * @param g The grid to compare
+	 * @return If the 2 grids are equal
+	 */
 	public boolean equals(Grid g)
 	{
-		//System.out.println("Entering Grid .equals");
-		//System.out.println("Returning " + Arrays.deepEquals(board, g.getArray()));
 		return (Arrays.deepEquals(board, g.getArray()));
 	}
 	
+	/**
+	 * Creates a grid based off a 2d array
+	 * @param newBoard The new grid
+	 */
 	public void setArray(int[][] newBoard)
 	{
 		 board = newBoard;
@@ -56,12 +69,12 @@ public class Grid implements Cloneable
 	
 	public int getNumRows()
 	{
-		return ROWS;
+		return board.length;
 	}
 	
 	public int getNumCols()
 	{
-		return COLS;
+		return board[0].length;
 	}
 	
 	public boolean isEmpty(Location loc)
@@ -77,31 +90,35 @@ public class Grid implements Cloneable
 		set(from, 0);
 	}
 	
-	// Returns the empty locations
+	/**
+	 * @return A LinkedList of the empty locations
+	 */
 	public LinkedList<Location> getEmptyLocations()
 	{
 		LinkedList<Location> empty = new LinkedList<Location>();
-		for(int row = 0; row < ROWS; row++)
-			for(int col = 0; col < COLS; col++)
+		for(int row = 0; row < getNumRows(); row++)
+			for(int col = 0; col < getNumCols(); col++)
 				if(board[row][col] == 0)
 					empty.add(new Location(row,col));
 		
 		return empty;
 	}
 	
-	// Returns the filled locations
+	/**
+	 * @return A LinkedList of filled locations
+	 */
 	public LinkedList<Location> getFilledLocations()
 	{
 		LinkedList<Location> filled = new LinkedList<Location>();
-		for(int row = 0; row < ROWS; row++)
-			for(int col = 0; col < COLS; col++)
+		for(int row = 0; row < getNumRows(); row++)
+			for(int col = 0; col < getNumCols(); col++)
 				if(board[row][col] != 0)
 					filled.add(new Location(row,col));
 			
 		return filled;
 	}
 	
-	/*
+	/**
 	 * Credit to chessdork for the code to combine the act methods
 	 * https://github.com/chessdork/2048
 	 * 
@@ -110,6 +127,7 @@ public class Grid implements Cloneable
 	 * begins at (0,0), traverses left-to-right, up-to-down, and terminates 
 	 * at (numRows, numCols).  If the direction is DOWN or RIGHT, the list
 	 * is reversed.
+	 * 
 	 */
 	public List<Location> getLocationsInTraverseOrder(int direction)
 	{
@@ -121,20 +139,25 @@ public class Grid implements Cloneable
 		return locs;
 	}
 	
-	// Converts the grid into a list from left to right, top to bottom
+	/**
+	 * Converts the grid into a list from left to right, top to bottom
+	 * @return The grid as a list
+	 */
 	public List<Location> toList()
 	{
 		List<Location> locs = new ArrayList<Location>();
 		
-		for (int row = 0; row < ROWS; row++)
-			for (int col = 0; col < COLS; col++)
+		for (int row = 0; row < getNumRows(); row++)
+			for (int col = 0; col < getNumCols(); col++)
 				locs.add(new Location(row, col));
 		
 		return locs;
 	}
 	
 		
-	// Sets all of the spaces to 0
+	/**
+	 *  Sets all of the spaces to 0
+	 */
 	public void clear()
 	{
 		for(int row = 0; row < board.length; row++)
@@ -142,38 +165,42 @@ public class Grid implements Cloneable
 				board[row][col] = 0;
 	}
 	
-	// Clones the array
-	// Used because the .clone() method creates an alias for 2d integer arrays
+	/**
+	 * Clones the array
+	 * Used because the array clone method creates an alias for 2d integer arrays
+	 */
 	public Grid clone()
 	{
-		//System.out.println("Entering Grid clone");
 		int[][] temp = new int[board.length][board[0].length];
 		
 		for(int row = 0; row < board.length; row++)
 			for(int col = 0; col < board[0].length; col++)
 				temp[row][col] = board[row][col];
 		
-		Grid toReturn = new Grid(temp);
-		return toReturn;	
+		Grid result = new Grid(temp);
+		return result;	
 	}
 	
 	
 	// Returns if the location is a valid position in the grid
 	public boolean isValid(Location loc)
 	{
-		return (loc.getRow() >= 0 && loc.getRow() < ROWS && loc.getCol() >= 0 && loc.getCol() < COLS);
+		return (loc.getRow() >= 0 && loc.getRow() < getNumRows() &&
+				loc.getCol() >= 0 && loc.getCol() < getNumCols());
 	}
 	
-	
+	/**
+	 * @return The string representation of the grid
+	 */
 	public String toString()
 	{
 		String output = "";
 		
 
 		Location loc;
-		for(int row = 0; row < ROWS; row++)
+		for(int row = 0; row < getNumRows(); row++)
 		{
-			for(int col = 0; col < COLS; col++)
+			for(int col = 0; col < getNumCols(); col++)
 			{
 				loc = new Location (row, col);
 				

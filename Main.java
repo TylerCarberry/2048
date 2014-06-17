@@ -1,5 +1,9 @@
-// 2048 Main
-// Tyler Carberry
+/**
+ * Tyler Carberry
+ * The driver for the game 2048
+ * This game is based off the original 2048 made by Gabriele Cirulli
+ * at https://github.com/gabrielecirulli/2048
+ */
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -88,7 +92,6 @@ public class Main
 				
 				switch(input)
 				{
-				
 					case 1: recursiveHelper(game);
 							break;
 					case 2: circlePlay(game);
