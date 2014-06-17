@@ -1,4 +1,5 @@
 // Tyler Carberry
+
 import java.util.*;
 public class Grid implements Cloneable
 {
@@ -99,6 +100,39 @@ public class Grid implements Cloneable
 			
 		return filled;
 	}
+	
+	/*
+	 * Credit to chessdork for the code to combine the act methods
+	 * https://github.com/chessdork/2048
+	 * 
+	 * Returns a list of locations in the order they should be traversed
+	 * when shifting tiles.  If the direction is UP or LEFT, the list 
+	 * begins at (0,0), traverses left-to-right, up-to-down, and terminates 
+	 * at (numRows, numCols).  If the direction is DOWN or RIGHT, the list
+	 * is reversed.
+	 */
+	public List<Location> getLocationsInTraverseOrder(int direction)
+	{
+		List<Location> locs = toList();
+
+		if (direction == Location.RIGHT || direction == Location.DOWN)
+			Collections.reverse(locs);
+		
+		return locs;
+	}
+	
+	// Converts the grid into a list from left to right, top to bottom
+	public List<Location> toList()
+	{
+		List<Location> locs = new ArrayList<Location>();
+		
+		for (int row = 0; row < ROWS; row++)
+			for (int col = 0; col < COLS; col++)
+				locs.add(new Location(row, col));
+		
+		return locs;
+	}
+	
 		
 	// Sets all of the spaces to 0
 	public void clear()

@@ -1,7 +1,8 @@
-import java.util.*;
-
 // Tyler Carberry
 // 2048
+// The main code of the game 2048
+
+import java.util.*;
 public class Game
 {
 	// The main board the game is played on
@@ -81,13 +82,13 @@ public class Game
 		
 		// Move the board
 		if(direction.equalsIgnoreCase("l") || direction.equalsIgnoreCase("left"))
-			actLeft();
+			act(Location.LEFT);
 		else if(direction.equalsIgnoreCase("r") || direction.equalsIgnoreCase("right"))
-			actRight();
+			act(Location.RIGHT);
 		else if(direction.equalsIgnoreCase("u") || direction.equalsIgnoreCase("up"))
-			actUp();
+			act(Location.UP);
 		else if(direction.equalsIgnoreCase("d") || direction.equalsIgnoreCase("down"))
-			actDown();
+			act(Location.DOWN);
 		else if(direction.equalsIgnoreCase("x") || direction.equalsIgnoreCase("exit")
 			|| direction.equalsIgnoreCase("stop") || direction.equalsIgnoreCase("quit"))
 			quit();
@@ -121,6 +122,20 @@ public class Game
 	
 	// TODO: Combine the following act methods if possible
 		
+	
+	private void act(int direction)
+	{
+		List<Location> locations = board.getLocationsInTraverseOrder(direction);
+		
+		for(Location loc : locations)
+		{
+			move(loc, direction);
+		}
+	}
+	
+	
+	
+	
 	// Moves all of the pieces to the right
 	private void actRight()
 	{

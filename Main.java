@@ -1,3 +1,6 @@
+// 2048 Main
+// Tyler Carberry
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Main
