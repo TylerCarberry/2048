@@ -217,16 +217,30 @@ public class Main
 		while(!(game.lost()))
 		{
 			direction = scan.next();
-			if(game.act(direction))
-				System.out.println(game);
+			direction = direction.toLowerCase();
+			
+			if(direction.equals("u"))
+				game.act(Location.UP);
+			else if(direction.charAt(0) == 'r')
+				game.act(Location.RIGHT);
+			else if(direction.charAt(0) == 'd')
+				game.act(Location.DOWN);
+			else if(direction.charAt(0) == 'l')
+				game.act(Location.LEFT);
+			else if(direction.charAt(0) == 'u')
+				game.undo();
+			else if(direction.charAt(0) == 's')
+				game.shuffle();
+			else if(direction.charAt(0) == 'q')
+				game.quit();
 			else
 			{
-				if(game.lost())
-					break;
-				
 				System.out.println("Invalid Command");
-				System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");
+				System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
 			}
+			
+			System.out.println(game);
+			
 		}
 
 		int milliseconds = (int) (game.timePlayed() * 1000);
@@ -399,9 +413,10 @@ public class Main
 	{
 		while(!(game.lost()))
 		{
-			while(game.canMoveRight() || game.canMoveUp() || game.canMoveLeft())
+			while(game.canMove(Location.RIGHT) || game.canMove(Location.UP) ||
+					game.canMove(Location.LEFT))
 			{
-				while(game.canMoveUp() || game.canMoveLeft())
+				while(game.canMove(Location.UP) || game.canMove(Location.LEFT))
 				{
 					System.out.println("Acting up");
 					game.act("u");

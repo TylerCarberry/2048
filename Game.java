@@ -97,12 +97,6 @@ public class Game
 			undo();
 			return true;
 		}
-		else if(direction.equalsIgnoreCase("shuffle"))
-		{
-			shuffle();
-			turnNumber++;
-			return true;
-		}
 		else
 			// Invalid input
 			return false;
@@ -120,82 +114,38 @@ public class Game
 		return true;
 	}
 	
-	// TODO: Combine the following act methods if possible
-		
-	
-	private void act(int direction)
+	// Moves the entire board in the given direction
+	public void act(int direction)
 	{
+		// Don't move if the game is already lost or quit
+		if(lost())
+			return;
+		
+		// If this is the game's first move, keep track of
+		// the starting time and activate the time limit
+		if(newGame)
+			madeFirstMove();
+		
+		// Used to determine if any pieces moved
+		Grid lastBoard = board.clone();
+				
+		// If moving up or left start at location 0,0 and move right and down
+		// If moving right or down start at the bottom right and move left and up
 		List<Location> locations = board.getLocationsInTraverseOrder(direction);
 		
+		// Move each piece in the direction
 		for(Location loc : locations)
-		{
 			move(loc, direction);
-		}
-	}
-	
-	
-	
-	
-	// Moves all of the pieces to the right
-	private void actRight()
-	{
-		Location loc;
 		
-		// Start at the right side of the board and move left
-		for(int col = board.getNumCols()-1; col >=0; col--)
-			for(int row = 0; row < board.getNumRows(); row++)
-			{
-				loc = new Location(row, col);
-				move(loc, Location.RIGHT);
-			}
-	}
-	
-	// Moves all of the pieces to the left
-	private void actLeft()
-	{
-		Location loc;
-		
-		// Start at the left side of the board and move right
-		for(int col = 0; col < board.getNumCols(); col++)
+		// If no pieces moved then it was not a valid move
+		if(! board.equals(lastBoard))
 		{
-			for(int row = 0; row < board.getNumRows(); row++)
-			{
-				loc = new Location(row, col);
-				move(loc, Location.LEFT);
-			}
+			turnNumber++;
+			addRandomPiece();
+			history.push(lastBoard, score);
+			movesRemaining--;
 		}
-	}
-	
-	// Moves all of the pieces up
-	private void actUp()
-	{
-		Location loc;
 		
-		// Start at the top of the board and move down
-		for(int row = 0; row < board.getNumRows(); row++)
-		{
-			for(int col = 0; col < board.getNumCols(); col++)
-			{
-				loc = new Location(row, col);
-				move(loc, Location.UP);
-			}
-		}
-	}
-	
-	// Moves all of the pieces down
-	private void actDown()
-	{
-		Location loc;
-		
-		// Start at the bottom side of the board and move up
-		for(int row = board.getNumRows()-1; row >=0; row--)
-		{
-			for(int col = 0; col < board.getNumCols(); col++)
-			{
-				loc = new Location(row, col);
-				move(loc, Location.DOWN);
-			}
-		}
 	}
 	
 	// Move a single piece all of the way in a given direction
@@ -242,6 +192,18 @@ public class Game
 		board.set(from, 0);
 	}
 	
+	// Stores the starting game time and activates the time limit after
+	// the first move instead of when the game is created
+	private void madeFirstMove()
+	{
+		d1 = new Date();
+		if(timeLimit > 0)
+			activateTimeLimit();
+		
+		newGame = false;
+	}
+	
+	
 	// Undo the game 1 turn
 	// Uses a stack to store previous moves
 	public void undo()
@@ -266,18 +228,24 @@ public class Game
 	// Shuffle the board
 	public void shuffle()
 	{
+		// If this is the game's first move, keep track of
+		// the starting time and activate the time limit
+		if(newGame)
+			madeFirstMove();
+		
 		// Adds every piece > 0 to a linked list
 		LinkedList<Integer> pieces = new LinkedList<Integer>();
+		int num;
 		
 		for(int row = 0; row < board.getNumRows(); row++)
 			for(int col = 0; col < board.getNumCols(); col++)
 			{
-				int num = board.get(new Location(row, col));
+				num = board.get(new Location(row, col));
 				if(num > 0)
 				{
 					pieces.add(num);
 					
-					// Removes the piece from the board
+					// Remove the piece from the board
 					// This is used instead of board.clear() to prevent
 					// the X's from disappearing in corner mode
 					board.set(new Location(row,col), 0);
@@ -287,11 +255,13 @@ public class Game
 		LinkedList<Location> empty;
 		
 		// Adds every piece to a random empty location
-		for(int num : pieces)
+		for(int piece : pieces)
 		{
 			empty = board.getEmptyLocations();
-			board.set(empty.get((int) (Math.random() * empty.size())), num);
+			board.set(empty.get((int) (Math.random() * empty.size())), piece);
 		}
+		
+		turnNumber++;
 	}
 	
 	// Remove the piece from the given location
@@ -366,9 +336,6 @@ public class Game
 		addRandomPiece();
 		addRandomPiece();
 	}
-		
-		
-	
 	
 	// Limit the number of undos
 	// -1 = unlimited
@@ -533,38 +500,14 @@ public class Game
 	}
 	
 
-	// Determines if the board can move right
-	public boolean canMoveRight()
+	// Precondition: direction is called using the final
+	// variables in the location class
+	public boolean canMove(int direction)
 	{
 		Game nextMove = clone();
-		nextMove.actRight();
+		nextMove.act(direction);
 		return !(nextMove.equals(this));
 	}
-	
-	// Determines if the board can move left
-	public boolean canMoveLeft()
-	{
-		Game nextMove = clone();
-		nextMove.actLeft();
-		return !(nextMove.equals(this));
-	}
-	
-	// Determines if the board can move up
-	public boolean canMoveUp()
-	{
-		Game nextMove = clone();
-		nextMove.actUp();	
-		return !(nextMove.equals(this));
-	}
-		
-	// Determines if the board can move down
-	public boolean canMoveDown()	
-	{
-		Game nextMove = clone();
-		nextMove.actDown();
-		return !(nextMove.equals(this));
-	}
-	
 	
 	public int getScore()
 	{
