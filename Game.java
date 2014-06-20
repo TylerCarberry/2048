@@ -258,7 +258,7 @@ public class Game
 	private void activateTimeLimit()
 	{	
 		// Create a new thread to quit the game
-		final Thread t = new Thread() {
+		final Thread T = new Thread() {
 		    public void run()
 		    {
 		    	try
@@ -279,7 +279,7 @@ public class Game
 		    }
 		};
 		
-		t.start();
+		T.start();
 	}
 	
 	/**
