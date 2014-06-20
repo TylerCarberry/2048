@@ -1,0 +1,1 @@
+These auto solver methods were originally written by Vasilis Vryniotis. It only has a 50% success rate and will be removed when I can find a better solution.
