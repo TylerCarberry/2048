@@ -592,7 +592,7 @@ public class Game
 			output += "  Moves Left: " + movesRemaining;
 		
 		output += "\n---------------------------------------------\n";
-		output += board.toString() + "\n";
+		output += board.toString();
 		
 		return output;
 	}

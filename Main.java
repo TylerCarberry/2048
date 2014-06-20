@@ -30,11 +30,13 @@ public class Main
 		System.out.println("||                Controls                 ||");
 		System.out.println("||       Left, Right, Up, Down, Quit       ||");
 		System.out.println("|| --------------------------------------- ||");
-		System.out.println("||                Power Ups                ||");
-		System.out.println("||              Shuffle, Undo              ||");
+		System.out.println("||    Type the first letter of your move   ||");
+		System.out.println("||        and press enter (l,r,u,d)        ||");
+		System.out.println("|| **** YOU CANNOT USE THE ARROW KEYS **** ||");
 		System.out.println("|| --------------------------------------- ||");
-		System.out.println("||                  Tips                   ||");
-		System.out.println("||        l,r,u,d can also be used         ||");
+		System.out.println("||                Power Ups                ||");
+		System.out.println("||         Shuffle, Undo, Autoplay         ||");
+		System.out.println("||    Type the full word and press enter   ||");
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println();
 		
@@ -72,7 +74,7 @@ public class Main
 				System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
 				
 				// Error trapping
-				while(input > 4 || input < 1)
+				while(input > 5 || input < 1)
 				{
 					try
 					{
@@ -84,7 +86,7 @@ public class Main
 						scan.next();
 					}
 					
-					if (input != 1 && input != 2)
+					if (input > 5 || input < 1)
 						System.out.println("Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
 				}
 			
@@ -129,7 +131,6 @@ public class Main
 	//---------------------------------------------------------
 	public static void customManualPlay()
 	{
-		Scanner scan = new Scanner(System.in);
 		String limit;
 		
 		System.out.println("Enter the dimentions of the grid (Recommended 4 4)");
@@ -222,28 +223,32 @@ public class Main
 			direction = scan.next();
 			direction = direction.toLowerCase();
 			
-			if(direction.equals("u"))
-				game.act(Location.UP);
-			else if(direction.charAt(0) == 'r')
-				game.act(Location.RIGHT);
-			else if(direction.charAt(0) == 'd')
-				game.act(Location.DOWN);
-			else if(direction.charAt(0) == 'l')
-				game.act(Location.LEFT);
-			else if(direction.charAt(0) == 'u')
-				game.undo();
-			else if(direction.charAt(0) == 's')
-				game.shuffle();
-			else if(direction.charAt(0) == 'q')
-				game.quit();
-			else
-			{
-				System.out.println("Invalid Command");
-				System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
+			if(direction.charAt(0) == 'a')
+				recursiveHelper(game);
+				else
+				{
+					if(direction.equals("u"))
+						game.act(Location.UP);
+					else if(direction.charAt(0) == 'r')
+						game.act(Location.RIGHT);
+					else if(direction.charAt(0) == 'd')
+						game.act(Location.DOWN);
+					else if(direction.charAt(0) == 'l')
+						game.act(Location.LEFT);
+					else if(direction.charAt(0) == 'u')
+						game.undo();
+					else if(direction.charAt(0) == 's')
+						game.shuffle();
+					else if(direction.charAt(0) == 'q')
+						game.quit();
+					else
+					{
+						System.out.println("Invalid Command");
+						System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
+					}
+			
+					System.out.println(game);
 			}
-			
-			System.out.println(game);
-			
 		}
 
 		int milliseconds = (int) (game.timePlayed() * 1000);
@@ -295,6 +300,7 @@ public class Main
 		Game lastTurn = game.clone();
 		autoMoveCount++;
 		
+		
 		// Undos the the entire game every 6000 moves
 		if(tile <= 2048 && autoMoveCount % 6000 == 0)
 		{
@@ -310,6 +316,7 @@ public class Main
 			System.out.println("***** Time Limit Reached *****");
 			return true;
 		}
+		
 		
 		if(upFirst)
 		{
@@ -380,7 +387,6 @@ public class Main
 		double num;
 		while(!(game.lost()))
 		{
-			System.out.println(game);
 			num = Math.random();
 
 			if(num > .5)
@@ -405,7 +411,11 @@ public class Main
 					System.out.println("Acting right");
 					game.act(Location.RIGHT);
 				}
+			
+			System.out.println(game);
 		}
+		
+		System.out.println("GAME LOST");
 		return game.getScore();
 	}
 
