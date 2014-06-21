@@ -18,8 +18,8 @@ public class Main
 	
 	public static void main(String[] args)
 	{	
-		int input = 0;
-			
+		int input = -1;
+
 		// Intro to game
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println("||  Welcome to 2048 ||  By Tyler Carberry  ||");
@@ -39,96 +39,218 @@ public class Main
 		System.out.println("||    Type the full word and press enter   ||");
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println();
-		
-		
-		System.out.println("Press enter to start playing the default mode. \n"
-				+ "Type anything then press enter to customize the game");
-		
-		
-		if(scan.nextLine().equals(""))
-			defaultManualPlay();
-		else
+		System.out.println("1. Practice Mode");
+		System.out.println("\tUnlimited Everything");
+		System.out.println("2. Normal Mode");
+		System.out.println("\t10 Undos");
+		System.out.println("3. Pro Mode");
+		System.out.println("\tNo Undos");
+		System.out.println("4. Quick Game Mode");
+		System.out.println("\t60 Seconds and 60 Moves");
+		System.out.println("5. Survival Mode");
+		System.out.println("\t30 seconds. Combine tiles for more time");
+		System.out.println("6. XMode");
+		System.out.println("\tMovable X tile that can't be combined");
+		System.out.println("7. Corner Mode");
+		System.out.println("\tImmovable Blocks In Corners");
+		System.out.println("8. Crazy Mode");
+		System.out.println("\t5x5 grid, Corner, X, and Survival modes");
+		System.out.println("9. Custom Game");
+		System.out.println("0. Autoplay");
+
+
+		// Error trapping
+		while(input < 0 || input > 9)
 		{
-			System.out.println("Manual or Autoplay? 1/2");
-			
-			// Error trapping for manual or autoplay
-			while(input != 1 && input != 2)
+			try { input = scan.nextInt(); }
+
+			catch(InputMismatchException e)
 			{
-				try { input = scan.nextInt(); }
-				
+				// Clears the invalid input
+				scan.next();
+			}
+
+			if (input < 0 || input > 9)
+				System.out.println("Incorrect input. Enter 1 or 2 with no punctuation");
+		}
+
+		// Autoplay
+		if(input == 0)
+		{
+			input = -1;
+			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
+
+			// Error trapping
+			while(input > 5 || input < 1)
+			{
+				try
+				{
+					input = scan.nextInt();
+				}
 				catch(InputMismatchException e)
 				{
-					// Clears the invalid input
+					// Clear the invalid input
 					scan.next();
 				}
-				
-				if (input != 1 && input != 2)
-					System.out.println("Incorrect input. Enter 1 or 2 with no punctuation");
+
+				if (input > 5 || input < 1)
+					System.out.println("Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
 			}
-			
-			if(input == 1)
-				customManualPlay();
-			else
+
+			Game game = new Game(4,4);
+
+			switch(input)
 			{
-				input = -1;
-				System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
-				
-				// Error trapping
-				while(input > 5 || input < 1)
-				{
-					try
-					{
-						input = scan.nextInt();
-					}
-					catch(InputMismatchException e)
-					{
-						// Clear the invalid input
-						scan.next();
-					}
-					
-					if (input > 5 || input < 1)
-						System.out.println("Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
-				}
+				case 1: recursiveHelper(game);
+				case 2: Autoplay.circlePlay(game);
+				case 3: Autoplay.cornerPlay(game);
+				case 4: Autoplay.randomPlay(game);
 			
-				Game game = new Game(4,4);
-				
-				switch(input)
-				{
-					case 1: recursiveHelper(game);
-							break;
-					case 2: Autoplay.circlePlay(game);
-							break;
-					case 3: Autoplay.cornerPlay(game);
-							break;
-					case 4: Autoplay.randomPlay(game);
-							break;
-					default:
-						System.out.println("\nTesting the recursive play");
-						for(int i = 0; i < 1000; i++)
-						{
-							Autoplay.recursivePlay(game.clone(), game.clone(), 2048, true);
-							System.out.println(autoMoveCount);
-							autoMoveCount = 0;
-						}
-				}
+				default:
+					System.out.println("\nTesting the recursive play");
+					for(int i = 0; i < 1000; i++)
+					{
+						Autoplay.recursivePlay(game.clone(), game.clone(), 2048, true);
+						System.out.println(autoMoveCount);
+						autoMoveCount = 0;
+					}
 			}
 		}
-	}
+		else
+		{
+			switch(input)
+			{
+				case 1: practiceMode();
+				case 2: normalMode();
+				case 3: proMode();
+				case 4: quickGameMode();
+				case 5: survivalMode();
+				case 6: XMode();
+				case 7: cornerMode();
+				case 8: crazyMode();
+				default: customManualPlay();
+			}
+		}
 
-	//---------------------------------------------------------
-	// Create a normal game
-	// 4x4 grid with no limits
-	//---------------------------------------------------------
-	public static void defaultManualPlay()
+	}
+	
+	// Practice Mode
+	// Unlimited everything
+	public static void practiceMode()
 	{
 		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(-1);
+		game.setTimeLimit(-1);
+		
+		manualPlay(game);
+	}
+
+	// Normal Mode
+	// Unlimited moves and time
+	// 10 undos
+	public static void normalMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(10);
+		game.setTimeLimit(-1);
+
+		manualPlay(game);
+	}
+
+	// Pro Mode
+	// Unlimited moves and time
+	// No undos
+	public static void proMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(0);
+		game.setTimeLimit(-1);
+
+		manualPlay(game);
+	}
+
+	// Quick Game Mode
+	// 1 minute to play and only 60 moves
+	// 10 undos
+	public static void quickGameMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(60);
+		game.setUndoLimit(10);
+		game.setTimeLimit(60);
+
+		manualPlay(game);
+	}
+
+
+	// Survival Mode
+	// Unlimited moves and undos
+	// Only 30 seconds to play. The time increases when tiles >= 8 combine
+	public static void survivalMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(-1);
+		game.setTimeLimit(30);
+		game.survivalMode();
+
+		manualPlay(game);
+	}
+
+	// XMode
+	// Unlimited moves and time
+	// 10 undos
+	// Places an X on the board that can move but not combine 
+	public static void XMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(10);
+		game.setTimeLimit(-1);
+		game.XMode();
+
+		manualPlay(game);
+	}
+
+	// Corner Mode
+	// Unlimited moves and time
+	// 10 undos
+	// Places immovable pieces in the corners of th board
+	public static void cornerMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(10);
+		game.setTimeLimit(-1);
+		game.cornerMode();
+
+		manualPlay(game);
+	}
+
+	// Crazy Mode
+	// Unlimited moves and undos
+	// A 5x5 game with Survival Mode, XMode, and Corner Mode
+	public static void crazyMode()
+	{
+		Game game = new Game(5,5);
+		game.setMoveLimit(-1);
+		game.setUndoLimit(-1);
+		game.setTimeLimit(30);
+		game.survivalMode();
+		game.cornerMode();
+		game.XMode();
+
 		manualPlay(game);
 	}
 	
-	//---------------------------------------------------------
+	//--------------------------------------------------------------------
 	// Customize Manual Play
-	// Move Limit, Undo Limit, Time Limit, Corner Mode
-	//---------------------------------------------------------
+	// Can change the board size, Move Limit, Undo Limit, Time Limit,
+	// Activate Corner Mode, XMode, and Survival Mode
+	//--------------------------------------------------------------------
 	public static void customManualPlay()
 	{
 		String limit;
@@ -233,29 +355,29 @@ public class Main
 			
 			if(direction.charAt(0) == 'a')
 				recursiveHelper(game);
+			else
+			{
+				if(direction.equals("u"))
+					game.act(Location.UP);
+				else if(direction.charAt(0) == 'r')
+					game.act(Location.RIGHT);
+				else if(direction.charAt(0) == 'd')
+					game.act(Location.DOWN);
+				else if(direction.charAt(0) == 'l')
+					game.act(Location.LEFT);
+				else if(direction.charAt(0) == 'u')
+					game.undo();
+				else if(direction.charAt(0) == 's')
+					game.shuffle();
+				else if(direction.charAt(0) == 'q')
+					game.quit();
 				else
 				{
-					if(direction.equals("u"))
-						game.act(Location.UP);
-					else if(direction.charAt(0) == 'r')
-						game.act(Location.RIGHT);
-					else if(direction.charAt(0) == 'd')
-						game.act(Location.DOWN);
-					else if(direction.charAt(0) == 'l')
-						game.act(Location.LEFT);
-					else if(direction.charAt(0) == 'u')
-						game.undo();
-					else if(direction.charAt(0) == 's')
-						game.shuffle();
-					else if(direction.charAt(0) == 'q')
-						game.quit();
-					else
-					{
-						System.out.println("Invalid Command");
-						System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
-					}
-			
-					System.out.println(game);
+					System.out.println("Invalid Command");
+					System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
+				}
+
+				System.out.println(game);
 			}
 		}
 
