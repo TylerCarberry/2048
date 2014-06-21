@@ -316,12 +316,10 @@ public class Game
 	
 	/**
 	 * Places immovable X's in the corners of the board
-	 * This will clear any existing pieces on the board
-	 * Corner mode and XMode can not be in effect at the same time
+	 * This will clear any existing pieces in the corners of the board
 	 */
 	public void cornerMode()
 	{
-		board.clear();
 		board.set(new Location(0,0), -1);
 		board.set(new Location(0,board.getNumCols() - 1), -1);
 		board.set(new Location(board.getNumRows() - 1,0), -1);
@@ -332,23 +330,20 @@ public class Game
 	
 	/**
 	 * Places an X on the board that can move but not combine 
-	 * This will clear any existing pieces on the board
-	 * Corner mode and XMode can not be in effect at the same time
 	 */
 	public void XMode()
 	{
 		LinkedList<Location> empty = board.getEmptyLocations();
-		
+
 		if(empty.isEmpty())
-		{
 			System.err.println("Can not start XMode. The board is filled");
-			return;
+		else
+		{
+			int randomLoc = (int) (Math.random() * empty.size());
+			board.set(empty.get(randomLoc), -2);
 		}
-		
-		int randomLoc = (int) (Math.random() * empty.size());
-		board.set(empty.get(randomLoc), -2);
 	}
-	
+
 	
 	/**
 	 *  The game increases the time limit when tiles >= 8 combine
