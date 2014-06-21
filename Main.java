@@ -159,6 +159,7 @@ public class Main
 		
 		Game game = new Game(rows,cols);
 		
+		// I don't know what this does but without it the program skips the next scan
 		scan.nextLine();
 		
 		System.out.println("Enter Move Limit (press enter for unlimited)");
@@ -204,20 +205,15 @@ public class Main
 		if(! limit.equals(""))
 			game.cornerMode();
 		
-		// A game cannot be Corner Mode and X Mode at the same time
-		else
-		{	
-			System.out.println("X Mode? (A movable X that cannot be combined)");
-			System.out.println("Press enter for no, anything else for yes");
-			limit = scan.nextLine();
-			
-			if(! limit.equals(""))
-				game.XMode();
-		
-		}
-		
+		System.out.println("X Mode? (A movable X that cannot be combined)");
+		System.out.println("Press enter for no, anything else for yes");
+		limit = scan.nextLine();
+
+		if(! limit.equals(""))
+			game.XMode();
+
+
 		manualPlay(game);
-			
 	}
 	
 	

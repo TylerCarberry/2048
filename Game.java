@@ -337,10 +337,16 @@ public class Game
 	 */
 	public void XMode()
 	{
-		board.clear();
-		board.set(new Location(0,0), -2);
-		addRandomPiece();
-		addRandomPiece();
+		LinkedList<Location> empty = board.getEmptyLocations();
+		
+		if(empty.isEmpty())
+		{
+			System.err.println("Can not start XMode. The board is filled");
+			return;
+		}
+		
+		int randomLoc = (int) (Math.random() * empty.size());
+		board.set(empty.get(randomLoc), -2);
 	}
 	
 	
