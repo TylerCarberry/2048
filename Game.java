@@ -37,7 +37,10 @@ public class Game
 	
 	// The time limit in seconds before the game automatically quits
 	// The timer starts immediately after the first move
-	private int timeLimit = -1;
+	private double timeLeft = -1;
+	
+	private boolean survivalMode = false;
+	
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -141,13 +144,17 @@ public class Game
 		
 	
 	/**
-	 *  Adds piece "from" into piece "to", 4 4 -> 0 8
+	 * Adds piece "from" into piece "to", 4 4 -> 0 8
 	 * Precondition: from and to are valid locations with equal values
 	 * @param from The piece to move
 	 * @param to The destination of the piece
 	*/
 	private void add(Location from, Location to)
 	{
+		if(survivalMode && board.get(from) >= 8)
+			timeLeft += board.get(from) / 4;
+		
+		
 		score += board.get(to) * 2;
 		board.set(to, board.get(to) * 2);
 		board.set(from, 0);
@@ -160,7 +167,7 @@ public class Game
 	private void madeFirstMove()
 	{
 		d1 = new Date();
-		if(timeLimit > 0)
+		if(timeLeft > 0)
 			activateTimeLimit();
 		
 		newGame = false;
@@ -244,41 +251,56 @@ public class Game
 	 * Stop the game automatically after a time limit
 	 * @param seconds The time limit in seconds
 	 */
-	public void setTimeLimit(int seconds)
+	public void setTimeLimit(double seconds)
 	{
 		if(seconds > 0)
-			timeLimit = seconds;
+			timeLeft = seconds;
 	}
 	
 	/**
 	 * Starts the time limit
 	 * Is called after the first move
-	 * Precondition timeLimit > 0
+	 * Precondition
 	 * */
 	private void activateTimeLimit()
 	{	
+		// How often to update the time left
+		// Smaller = update more often
+		final double UPDATESPEED = 0.1;
+		
+		
 		// Create a new thread to quit the game
 		final Thread T = new Thread() {
-		    public void run()
-		    {
-		    	try
-		    	{
-		    		// Pause the thread for x milliseconds
-		    		// The game continues to run
-		            Thread.sleep(getTimeLimit() * 1000);
-		    	}
-		    	catch (Exception e)
-		    	{
-		    		System.err.println(e);
-		    		System.err.println(Thread.currentThread().getStackTrace());
-		    	}
-		    	
-		    	// After the time limit is up, quit the game
-		    	System.out.println("Time Limit Reached");
-		    	quitGame = true;   
-		    }
-		};
-		
+			public void run()
+			{
+				while(timeLeft > 0)
+				{
+					try
+					{
+						// Pause the thread for x milliseconds
+						// The game continues to run
+						Thread.sleep((long) (UPDATESPEED * 1000.0));
+					}
+					catch (Exception e)
+					{
+						System.err.println(e);
+						System.err.println(Thread.currentThread().getStackTrace());
+					}
+
+					timeLeft -= UPDATESPEED;
+					
+					// Round the time to the second decimal place
+					// The number of 0's = number of decimal places
+					timeLeft = (double)Math.round(timeLeft * 100) / 100;
+				}
+				
+				// After the time limit is up, quit the game
+				System.out.println("Time Limit Reached");
+				quitGame = true;   
+				
+			}
+		}; // end thread
+
 		T.start();
 	}
 	
@@ -287,9 +309,9 @@ public class Game
 	 * This is NOT the amount of time currently left in the game, 
 	 * it is the total time limit.
 	 */
-	public int getTimeLimit()
+	public double getTimeLimit()
 	{
-		return timeLimit;
+		return timeLeft;
 	}
 	
 	/**
@@ -320,6 +342,21 @@ public class Game
 		addRandomPiece();
 		addRandomPiece();
 	}
+	
+	
+	/**
+	 *  The game increases the time limit when tiles >= 8 combine
+	 */
+	public void survivalMode()
+	{
+		survivalMode = true;
+		
+		// If no time limit is in effect, set it to 30 seconds
+		if(timeLeft <= 0)
+			timeLeft = 30;
+	}
+	
+	
 	
 	/**
 	 *  Limit the number of undos
@@ -464,7 +501,6 @@ public class Game
 	{
 		Date d2 = new Date();
 		double seconds = ((d2.getTime() - d1.getTime()) / 1000.0);
-		
 		return seconds;
 	}
 	
@@ -586,10 +622,28 @@ public class Game
 	public String toString()
 	{
 		String output = "---------------------------------------------\n";
-		output += "||  Turn #" + turnNumber + "  Score: " + score;
+		output += "||  Turn #" + turnNumber + "  Score: " + score + "\n";
+		output += "||  Moves Left:";
 		
 		if(movesRemaining >= 0)
-			output += "  Moves Left: " + movesRemaining;
+			output += movesRemaining;
+		else
+			output += "°";
+		
+		output += " Undos Left:";
+		
+		if(undosRemaining >= 0)
+			output += undosRemaining;
+		else
+			output += "°";
+		
+		output += " Time Left:";
+		
+		if(timeLeft >= 0)
+			output += timeLeft;
+		else
+			output += "°";
+		
 		
 		output += "\n---------------------------------------------\n";
 		output += board.toString();

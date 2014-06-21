@@ -176,13 +176,25 @@ public class Main
 			game.setUndoLimit(-1);
 		else
 			game.setUndoLimit(Integer.parseInt(limit));
-			
+		
+		
 		System.out.println("Enter Time Limit In Seconds (press enter for unlimited)");
 		limit = scan.nextLine();
 		
-		if(! limit.equals(""))
+		if(limit.equals(""))
+			game.setTimeLimit(-1);
+		else
+		{
 			game.setTimeLimit(Integer.parseInt(limit));
-		
+			
+			// A game can only be in survival mode if it has a time limit
+			System.out.println("Survival Mode? (Combine tiles to increase time limit)");
+			System.out.println("Press enter for no, anything else for yes");
+			limit = scan.nextLine();
+			
+			if(! limit.equals(""))
+				game.survivalMode();
+		}
 		
 		
 		System.out.println("Corner Mode? (Immovable X's in corner)");
@@ -213,7 +225,7 @@ public class Main
 	// Manual Play
 	//---------------------------------------------------------
 	public static void manualPlay(Game game)
-	{
+	{	
 		String direction;
 	
 		System.out.println(game);
