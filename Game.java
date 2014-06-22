@@ -250,6 +250,13 @@ public class Game
 				if(tile <= 4 && tile > 0)
 					board.set(new Location(row,col), 0);
 			}
+		
+		// There are always at least 2 pieces on the board
+		if(board.getFilledLocations().size() < 2)
+			addRandomPiece();
+		if(board.getFilledLocations().size() < 2)
+			addRandomPiece();
+		
 	}
 	
 	/**
