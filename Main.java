@@ -35,7 +35,8 @@ public class Main
 		System.out.println("|| **** YOU CANNOT USE THE ARROW KEYS **** ||");
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println("||                Power Ups                ||");
-		System.out.println("||         Shuffle, Undo, Autoplay         ||");
+		System.out.println("||         Shuffle, Undo, Autoplay,        ||");
+		System.out.println("||            Remove Low Tiles             ||");
 		System.out.println("||    Type the full word and press enter   ||");
 		System.out.println("|| --------------------------------------- ||");
 		System.out.println();
@@ -132,6 +133,85 @@ public class Main
 			}
 		}
 
+	}
+	
+	//---------------------------------------------------------
+	// Manual Play
+	//---------------------------------------------------------
+	public static void manualPlay(Game game)
+	{	
+		String direction;
+
+		System.out.println(game);
+
+		while(!(game.lost()))
+		{
+			direction = scan.next();
+			direction = direction.toLowerCase();
+
+			// Auto play
+			if(direction.contains("auto"))
+				recursiveHelper(game);
+			
+			// Remove Low Tiles
+			if(direction.contains("remove"))
+				game.removeLowTiles();
+
+			// Undo
+			else if(direction.equals("undo"))
+				game.undo();
+
+			// Shuffle
+			else if(direction.equals("shuffle"))
+				game.shuffle();
+
+			// Quit
+			else if(direction.charAt(0) == 'q')
+				game.quit();
+
+			// W or U to move up
+			else if(direction.charAt(0) == 'u' || direction.charAt(0) == 'w')
+				game.act(Location.UP);
+
+			// R or D to move right
+			else if(direction.charAt(0) == 'r' || direction.charAt(0) == 'd')
+				game.act(Location.RIGHT);
+
+			// D or S to move down
+			else if(direction.charAt(0) == 'd' || direction.charAt(0) == 's')
+				game.act(Location.DOWN);
+
+			// L or A to move left
+			else if(direction.charAt(0) == 'l' || direction.charAt(0) == 'a')
+				game.act(Location.LEFT);
+
+			else
+			{
+				System.out.println("Invalid Command");
+				System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
+			}
+
+			System.out.println(game);
+
+		}
+
+		// When the game is over
+
+		int milliseconds = (int) (game.timePlayed() * 1000);
+		int seconds = (int) (milliseconds / 1000) % 60 ;
+		int minutes = (int) (milliseconds / (1000*60));
+		milliseconds -= seconds * 60;
+
+		// Round the time to the nearest millisecond
+		// Prevent precision errors (0.89999999999 seconds)
+		String milli = "" + milliseconds;
+		milli = "." + milli.substring(0,3);
+
+		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
+
+		// This is needed to stop the game even if the time limit is not up
+		// The 0 means that there were no errors
+		System.exit(0);
 	}
 	
 	// Practice Mode
@@ -336,66 +416,6 @@ public class Main
 
 
 		manualPlay(game);
-	}
-	
-	
-	//---------------------------------------------------------
-	// Manual Play
-	//---------------------------------------------------------
-	public static void manualPlay(Game game)
-	{	
-		String direction;
-	
-		System.out.println(game);
-		
-		while(!(game.lost()))
-		{
-			direction = scan.next();
-			direction = direction.toLowerCase();
-			
-			if(direction.charAt(0) == 'a')
-				recursiveHelper(game);
-			else
-			{
-				if(direction.equals("u"))
-					game.act(Location.UP);
-				else if(direction.charAt(0) == 'r')
-					game.act(Location.RIGHT);
-				else if(direction.charAt(0) == 'd')
-					game.act(Location.DOWN);
-				else if(direction.charAt(0) == 'l')
-					game.act(Location.LEFT);
-				else if(direction.charAt(0) == 'u')
-					game.undo();
-				else if(direction.charAt(0) == 's')
-					game.shuffle();
-				else if(direction.charAt(0) == 'q')
-					game.quit();
-				else
-				{
-					System.out.println("Invalid Command");
-					System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
-				}
-
-				System.out.println(game);
-			}
-		}
-
-		int milliseconds = (int) (game.timePlayed() * 1000);
-		int seconds = (int) (milliseconds / 1000) % 60 ;
-		int minutes = (int) (milliseconds / (1000*60));
-		milliseconds -= seconds * 60;
-		
-		// Round the time to the nearest millisecond
-		// Prevent precision errors (0.89999999999 seconds)
-		String milli = "" + milliseconds;
-		milli = "." + milli.substring(0,3);
-		
-		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
-	
-		// This is needed to stop the game even if the time limit is not up
-		// The 0 means that there were no errors
-		System.exit(0);
 	}
 	
 	//---------------------------------------------------------
