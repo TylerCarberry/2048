@@ -239,10 +239,24 @@ public class Game
 	}
 	
 	/**
+	 * Remove all 2's and 4's from the board
+	 */
+	public void removeLowTiles()
+	{
+		for(int row = 0; row < board.getNumRows(); row++)
+			for(int col = 0; col < board.getNumCols(); col++)
+			{
+				int tile = board.get(new Location(row,col));
+				if(tile <= 4 && tile > 0)
+					board.set(new Location(row,col), 0);
+			}
+	}
+	
+	/**
 	 * Remove the piece from the given location
 	 * @param loc The location to remove
 	 */
-	public void delete(Location loc)
+	public void removeTile(Location loc)
 	{
 		board.set(loc, 0);
 	}
