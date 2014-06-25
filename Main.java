@@ -352,14 +352,12 @@ public class Main
 		
 		if(limit > 0)
 		{
-			
 			// A game can only be in survival mode if it has a time limit
 			System.out.println("Survival Mode? (Combine tiles to increase time limit)");
 			System.out.println("Press enter for no, anything else for yes");
 			if(! scan.nextLine().equals(""))
 				game.survivalMode();
 		}
-		
 		
 		System.out.println("Corner Mode? (Immovable X's in corner)");
 		System.out.println("Press enter for no, anything else for yes");
@@ -370,7 +368,12 @@ public class Main
 		System.out.println("Press enter for no, anything else for yes");
 		if(! scan.nextLine().equals(""))
 			game.XMode();
-
+		
+		System.out.println("Dynamic Tile Spawning? (Higher value tiles can appear)");
+		System.out.println("Press enter for no, anything else for yes");
+		if(! scan.nextLine().equals(""))
+			game.dynamicTileSpawning(true);
+		
 		manualPlay(game);
 	}
 	
@@ -431,7 +434,7 @@ public class Main
 	}
 	
 	/**
-	 * Used to get the input for the time limit, undo limit, and time limit
+	 * Used to get input for the time limit, undo limit, and time limit
 	 * @return The limit. (An integer -1 or greater)
 	 */
 	public static int getLimitInput()
@@ -441,7 +444,7 @@ public class Main
 		while(true)
 		{
 			limit = scan.nextLine();
-
+			
 			if(limit.equals(""))
 				return -1;
 			else

@@ -41,6 +41,11 @@ public class Game
 	
 	private boolean survivalMode = false;
 	
+	// If true, any tile less than the max tile can spawn
+	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
+	// All possible tiles have an equal chance of appearing
+	private boolean dynamicTileSpawning = false;
+	
 	
 	/**
 	 * Creates a default game with the size 4x4
@@ -378,6 +383,11 @@ public class Game
 			timeLeft = 30;
 	}
 	
+	public void dynamicTileSpawning(boolean enabled)
+	{
+		dynamicTileSpawning = enabled;
+	}
+	
 	
 	
 	/**
@@ -424,19 +434,48 @@ public class Game
 	 * Randomly adds a new piece to an empty space
 	 * 90% add 2, 10% add 4
 	 * CHANCE_OF_2 is a final variable declared at the top
+	 * 
+	 * If dynamicTileSpawing is true,
+	 * any tile less than the max tile can spawn
+	 * Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
+	 * All possible tiles have an equal chance of appearing
 	 */
 	public void addRandomPiece()
 	{
 		LinkedList<Location> empty = board.getEmptyLocations();
-		
+
+		// If there are no empty pieces on the board don't do anything
 		if(empty.isEmpty())
 			return;
-		
+
 		int randomLoc = (int) (Math.random() * empty.size());
-		if(Math.random() < CHANCE_OF_2)
-			board.set(empty.get(randomLoc), 2);
+
+		// See method header for description of dynamicTileSpawning
+		if(dynamicTileSpawning)
+		{
+			// All powers of 2 less that the highest tile
+			ArrayList<Integer> possibleTiles = new ArrayList<Integer>();
+			possibleTiles.add(2);
+			possibleTiles.add(4);
+			
+			// The highest tile on the board
+			int highest = highestPiece();
+			
+			// Add each possible value to possibleTiles
+			for(int t = 8; t < highest; t *= 2)
+				possibleTiles.add(t);
+			
+			int tile = possibleTiles.get((int) (Math.random() * possibleTiles.size()));
+			board.set(empty.get(randomLoc), tile);
+			
+		}
 		else
-			board.set(empty.get(randomLoc), 4);
+		{	
+			if(Math.random() < CHANCE_OF_2)
+				board.set(empty.get(randomLoc), 2);
+			else
+				board.set(empty.get(randomLoc), 4);
+		}
 	}
 	
 	/**
