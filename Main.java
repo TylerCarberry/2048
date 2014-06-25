@@ -58,45 +58,14 @@ public class Main
 		System.out.println("\t5x5 grid, Corner, X, and Survival modes");
 		System.out.println("9. Custom Game");
 		System.out.println("0. Autoplay");
-
-
-		// Error trapping
-		while(input < 0 || input > 9)
-		{
-			try { input = scan.nextInt(); }
-
-			catch(InputMismatchException e)
-			{
-				// Clears the invalid input
-				scan.next();
-			}
-
-			if (input < 0 || input > 9)
-				System.out.println("Incorrect input. Enter 1 or 2 with no punctuation");
-		}
-
+		
+		input = getIntegerInput(0, 9, "Incorrect input. Enter 1 through 9 with no punctuation");
+		
 		// Autoplay
 		if(input == 0)
 		{
-			input = -1;
-			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");
-
-			// Error trapping
-			while(input > 5 || input < 1)
-			{
-				try
-				{
-					input = scan.nextInt();
-				}
-				catch(InputMismatchException e)
-				{
-					// Clear the invalid input
-					scan.next();
-				}
-
-				if (input > 5 || input < 1)
-					System.out.println("Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
-			}
+			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");	
+			input = getIntegerInput(1, 4, "Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
 
 			Game game = new Game(4,4);
 
@@ -333,7 +302,7 @@ public class Main
 	//--------------------------------------------------------------------
 	public static void customManualPlay()
 	{
-		String limit;
+		int limit;
 		
 		System.out.println("Enter the dimentions of the grid (Recommended 4 4)");
 		int rows = -1;
@@ -356,7 +325,11 @@ public class Main
 			}
 		
 			if (cols < 1 || rows < 1)
+			{
 				System.out.println("Incorrect input. Enter the number of rows and columns.");
+				rows = -1;
+				cols = -1;
+			}
 		}
 		
 		Game game = new Game(rows,cols);
@@ -365,55 +338,38 @@ public class Main
 		scan.nextLine();
 		
 		System.out.println("Enter Move Limit (press enter for unlimited)");
-		limit = scan.nextLine();
-		
-		if(limit.equals(""))
-			game.setMoveLimit(-1);
-		else
-			game.setMoveLimit(Integer.parseInt(limit));
+		limit = getLimitInput();
+		game.setMoveLimit(limit);
 		
 		System.out.println("Enter Undo Limit (press enter for unlimited)");
-		limit = scan.nextLine();
-		
-		if(limit.equals(""))
-			game.setUndoLimit(-1);
-		else
-			game.setUndoLimit(Integer.parseInt(limit));
+		limit = getLimitInput();
+		game.setUndoLimit(limit);
 		
 		
 		System.out.println("Enter Time Limit In Seconds (press enter for unlimited)");
-		limit = scan.nextLine();
+		limit = getLimitInput();
+		game.setUndoLimit(limit);
 		
-		if(limit.equals(""))
-			game.setTimeLimit(-1);
-		else
+		if(limit > 0)
 		{
-			game.setTimeLimit(Integer.parseInt(limit));
 			
 			// A game can only be in survival mode if it has a time limit
 			System.out.println("Survival Mode? (Combine tiles to increase time limit)");
 			System.out.println("Press enter for no, anything else for yes");
-			limit = scan.nextLine();
-			
-			if(! limit.equals(""))
+			if(! scan.nextLine().equals(""))
 				game.survivalMode();
 		}
 		
 		
 		System.out.println("Corner Mode? (Immovable X's in corner)");
 		System.out.println("Press enter for no, anything else for yes");
-		limit = scan.nextLine();
-		
-		if(! limit.equals(""))
+		if(! scan.nextLine().equals(""))
 			game.cornerMode();
 		
 		System.out.println("X Mode? (A movable X that cannot be combined)");
 		System.out.println("Press enter for no, anything else for yes");
-		limit = scan.nextLine();
-
-		if(! limit.equals(""))
+		if(! scan.nextLine().equals(""))
 			game.XMode();
-
 
 		manualPlay(game);
 	}
@@ -431,4 +387,83 @@ public class Main
 		System.out.println("Total Number of Moves: " + autoMoveCount);
 		
 	}
+	
+	/**
+	 * @param minValue The lowest value that the input can have
+	 * @param maxValue The highest value that the input can have
+	 * @param errorMessage Printed when invalid input entered
+	 * @return A valid integer input
+	 */
+	public static int getIntegerInput(int minValue, int maxValue, String errorMessage)
+	{
+		int input = 0;
+		boolean isInteger = false;
+		boolean isValid = false;
+		
+		// Error trapping
+		do
+		{
+			try
+			{
+				input = scan.nextInt();
+				isInteger = true;
+			}
+			catch(InputMismatchException e)
+			{
+				// Clears the invalid input
+				scan.next();
+				isInteger = false;
+			}
+			
+			if(!isInteger || (input < minValue || input > maxValue))
+			{
+				isValid = false;
+				System.out.println(errorMessage);
+			}
+			else
+				isValid = true;
+
+			
+		} while(!isValid);
+	
+		return input;
+	
+	}
+	
+	/**
+	 * Used to get the input for the time limit, undo limit, and time limit
+	 * @return The limit. (An integer -1 or greater)
+	 */
+	public static int getLimitInput()
+	{
+		String limit;
+		
+		while(true)
+		{
+			limit = scan.nextLine();
+
+			if(limit.equals(""))
+				return -1;
+			else
+			{
+				try
+				{
+					int moveLimit = Integer.parseInt(limit);
+					
+					if(moveLimit >= 0)
+						return moveLimit;
+					else
+						System.out.println("Error: Enter a value 0 or greater");
+				
+				}
+				catch (Exception e)
+				{
+					System.out.println("Error: Enter a numerical value 0 or greater");
+					System.out.println("Press enter for unlimited");
+				}
+				
+			}
+		}
+	}
+	
 }
