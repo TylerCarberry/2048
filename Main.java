@@ -42,8 +42,8 @@ public class Main
 		System.out.println("\t10 Undos");
 		System.out.println("3. Pro Mode");
 		System.out.println("\tNo Undos");
-		System.out.println("4. Quick Game Mode");
-		System.out.println("\t60 Seconds and 60 Moves");
+		System.out.println("4. Rush Mode");
+		System.out.println("\tHigher value tiles will spawn");
 		System.out.println("5. Survival Mode");
 		System.out.println("\t30 seconds. Combine tiles for more time");
 		System.out.println("6. XMode");
@@ -95,7 +95,7 @@ public class Main
 				case 1: practiceMode();
 				case 2: normalMode();
 				case 3: proMode();
-				case 4: quickGameMode();
+				case 4: rushMode();
 				case 5: survivalMode();
 				case 6: XMode();
 				case 7: cornerMode();
@@ -223,15 +223,12 @@ public class Main
 		manualPlay(game);
 	}
 
-	// Quick Game Mode
-	// 1 minute to play and only 60 moves
-	// 10 undos
-	public static void quickGameMode()
+	// Rush Mode
+	// Higher value tiles spawn
+	public static void rushMode()
 	{
 		Game game = new Game();
-		game.setMoveLimit(60);
-		game.setUndoLimit(10);
-		game.setTimeLimit(60);
+		game.dynamicTileSpawning(true);
 
 		manualPlay(game);
 	}
