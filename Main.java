@@ -9,10 +9,6 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Main
 {
-	// Used for the recursive autoplay method to determine
-	// the total number of moves
-	private static int autoMoveCount = 0;
-	
 	// All methods can use the scanner without declaring it each time
 	private static Scanner scan = new Scanner (System.in);
 	
@@ -68,22 +64,28 @@ public class Main
 			input = getIntegerInput(1, 4, "Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
 
 			Game game = new Game(4,4);
-
+						
 			switch(input)
 			{
 				case 1: recursiveHelper(game);
+						break;
 				case 2: Autoplay.circlePlay(game);
+						break;
 				case 3: Autoplay.cornerPlay(game);
+						break;
 				case 4: Autoplay.randomPlay(game);
+						break;
 			
 				default:
+				{	
 					System.out.println("\nTesting the recursive play");
 					for(int i = 0; i < 1000; i++)
 					{
 						Autoplay.recursivePlay(game.clone(), game.clone(), 2048, true);
-						System.out.println(autoMoveCount);
-						autoMoveCount = 0;
+						System.out.println(Autoplay.getAutoMoveCount());
+						Autoplay.setAutoMoveCount(0);
 					}
+				}
 			}
 		}
 		else
@@ -101,7 +103,7 @@ public class Main
 				default: customManualPlay();
 			}
 		}
-
+		
 	}
 	
 	//---------------------------------------------------------
@@ -387,8 +389,7 @@ public class Main
 		int tile = scan.nextInt();
 		Autoplay.recursivePlay(game, game, tile, true);
 		System.out.println("**** GAME WON ****");
-		System.out.println("Total Number of Moves: " + autoMoveCount);
-		
+		System.out.println("Total Number of Moves: " + Autoplay.getAutoMoveCount());
 	}
 	
 	/**

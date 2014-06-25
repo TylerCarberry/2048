@@ -119,8 +119,9 @@ public class Autoplay
 			return true;
 
 		Game lastTurn = game.clone();
-		autoMoveCount++;
+		autoMoveCount += 1;
 
+		System.out.println(autoMoveCount);
 
 		// Undos the the entire game every 6000 moves
 		if(tile <= 2048 && autoMoveCount % 6000 == 0)
@@ -180,5 +181,14 @@ public class Autoplay
 		return false;
 	}
 
-
+	public static int getAutoMoveCount()
+	{
+		return autoMoveCount;
+	}
+	
+	public static void setAutoMoveCount(int value)
+	{
+		autoMoveCount = value;
+	}
+	
 }
