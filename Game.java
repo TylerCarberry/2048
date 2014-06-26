@@ -5,8 +5,10 @@
  */
 
 import java.util.*;
-public class Game
+public class Game implements java.io.Serializable
 {
+	private static final long serialVersionUID = 3356339029021499348L;
+
 	// The main board the game is played on
 	private Grid board;
 	

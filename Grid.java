@@ -1,8 +1,9 @@
 // Tyler Carberry
 
 import java.util.*;
-public class Grid implements Cloneable
+public class Grid implements Cloneable, java.io.Serializable
 {
+	private static final long serialVersionUID = -5760271435893128475L;
 	private int[][] board;
 	
 	/** Constructor

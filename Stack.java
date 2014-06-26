@@ -5,8 +5,10 @@
  */
 
 import java.util.LinkedList;
-public class Stack implements Cloneable
+public class Stack implements Cloneable, java.io.Serializable
 {
+	private static final long serialVersionUID = -7493874171801469542L;
+	
 	LinkedList<Grid> stackBoard;
 	LinkedList<Integer> stackScore;
 	

@@ -5,8 +5,9 @@
  */
 
 import java.util.LinkedList;
-public class Location implements Cloneable
+public class Location implements Cloneable, java.io.Serializable
 {
+	private static final long serialVersionUID = -8080786867527968562L;
 	
 	public final static int UP = 0;
 	public final static int RIGHT = 1;

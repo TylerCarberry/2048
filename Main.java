@@ -5,6 +5,7 @@
  * at https://github.com/gabrielecirulli/2048
  */
 
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Main
@@ -136,6 +137,28 @@ public class Main
 			else if(direction.equals("shuffle"))
 				game.shuffle();
 
+			// Save Game
+			else if(direction.equals("save"))
+				try
+				{
+					Save.saveGame(game);
+				}
+				catch (IOException e) 
+				{
+					e.printStackTrace();
+				}
+			
+			// Load Game
+			else if(direction.equals("load"))
+				try
+				{
+					game = Save.loadGame();
+				}
+				catch (Exception e)
+				{
+					System.out.println("Error: No saved game");
+				}
+			
 			// Quit
 			else if(direction.charAt(0) == 'q')
 				game.quit();
