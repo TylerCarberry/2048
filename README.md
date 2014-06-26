@@ -9,7 +9,7 @@ at https://github.com/gabrielecirulli/2048
 
 1. Undos: Unlimited undos in practice mode and up to 10 in normal mode
 2. Shuffle: Randomly move every tile. Use as many times as you want.
-3. Autoplay: 4 different methods with up to a 94% win rate. [See more here](https://github.com/tytan34/2048/blob/master/README.md# "Autoplay")
+3. Autoplay: 4 different methods with up to a 94% win rate. [See more here](https://github.com/tytan34/2048/blob/master/README.md#autoplay "Autoplay")
 4. Remove Low Values Power Up: Remove all 2s and 4s from the game 
 5. Multiple grid sizes: Play on a 3x3 board or 20x25
 
