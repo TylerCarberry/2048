@@ -233,7 +233,7 @@ public class Game implements java.io.Serializable
 				}
 			}
 		
-		LinkedList<Location> empty;
+		List<Location> empty;
 		
 		// Adds every piece to a random empty location
 		for(int piece : pieces)
@@ -348,12 +348,23 @@ public class Game implements java.io.Serializable
 	 */
 	public void cornerMode()
 	{
-		board.set(new Location(0,0), -1);
-		board.set(new Location(0,board.getNumCols() - 1), -1);
-		board.set(new Location(board.getNumRows() - 1,0), -1);
-		board.set(new Location(board.getNumRows() - 1 ,board.getNumCols() - 1), -1);
-		addRandomPiece();
-		addRandomPiece();
+		int previousValue;
+		
+		previousValue = board.set(new Location(0,0), -1);
+		if(previousValue != 0)
+			addRandomPiece(previousValue);
+			
+		previousValue = board.set(new Location(0,board.getNumCols() - 1), -1);
+		if(previousValue != 0)
+			addRandomPiece(previousValue);
+		
+		previousValue = board.set(new Location(board.getNumRows() - 1,0), -1);
+		if(previousValue != 0)
+			addRandomPiece(previousValue);
+		
+		previousValue = board.set(new Location(board.getNumRows() - 1 ,board.getNumCols() - 1), -1);
+		if(previousValue != 0)
+			addRandomPiece(previousValue);
 	}
 	
 	/**
@@ -361,7 +372,7 @@ public class Game implements java.io.Serializable
 	 */
 	public void XMode()
 	{
-		LinkedList<Location> empty = board.getEmptyLocations();
+		List<Location> empty = board.getEmptyLocations();
 
 		if(empty.isEmpty())
 			System.err.println("Can not start XMode. The board is filled");
@@ -444,14 +455,6 @@ public class Game implements java.io.Serializable
 	 */
 	public void addRandomPiece()
 	{
-		LinkedList<Location> empty = board.getEmptyLocations();
-
-		// If there are no empty pieces on the board don't do anything
-		if(empty.isEmpty())
-			return;
-
-		int randomLoc = (int) (Math.random() * empty.size());
-
 		// See method header for description of dynamicTileSpawning
 		if(dynamicTileSpawning)
 		{
@@ -468,17 +471,33 @@ public class Game implements java.io.Serializable
 				possibleTiles.add(t);
 			
 			int tile = possibleTiles.get((int) (Math.random() * possibleTiles.size()));
-			board.set(empty.get(randomLoc), tile);
+			addRandomPiece(tile);
 			
 		}
 		else
 		{	
 			if(Math.random() < CHANCE_OF_2)
-				board.set(empty.get(randomLoc), 2);
+				addRandomPiece(2);
 			else
-				board.set(empty.get(randomLoc), 4);
+				addRandomPiece(4);
 		}
 	}
+	
+	private void addRandomPiece(int tile)
+	{
+		// A list of the empty spaces on the board
+		List<Location> empty = board.getEmptyLocations();
+
+		// If there are no empty pieces on the board don't do anything
+		if(empty.isEmpty())
+			return;
+		
+		int randomLoc = (int) (Math.random() * empty.size());
+		
+		board.set(empty.get(randomLoc), tile);
+	}
+
+	
 	
 	/**
 	 * @return Whether or not the game is won
