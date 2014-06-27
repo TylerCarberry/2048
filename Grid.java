@@ -83,8 +83,11 @@ public class Grid implements Cloneable, java.io.Serializable
 		return (get(loc) == 0);
 	}
 	
-	// Move the piece in location from into location to, overriding
-	// what was originally there. Set the old location to 0.
+	/** Move the piece in location from into location to, overriding
+	 *  what was originally there. Set the old location to 0.
+	 * @param from The tile the move
+	 * @param to The destination of the tile
+	 */
 	public void move(Location from, Location to)
 	{
 		set(to, get(from));
