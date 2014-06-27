@@ -330,6 +330,8 @@ public class Main
 		game.survivalMode();
 		game.cornerMode();
 		game.XMode();
+		game.dynamicTileSpawning(true);
+		game.speedMode(true);
 
 		manualPlay(game);
 	}
@@ -387,7 +389,7 @@ public class Main
 		
 		System.out.println("Enter Time Limit In Seconds (press enter for unlimited)");
 		limit = getLimitInput();
-		game.setUndoLimit(limit);
+		game.setTimeLimit(limit);
 		
 		if(limit > 0)
 		{
