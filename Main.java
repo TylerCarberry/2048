@@ -104,9 +104,9 @@ public class Main
 				default: customManualPlay();
 			}
 		}
-		
+
 	}
-	
+
 	//---------------------------------------------------------
 	// Manual Play
 	//---------------------------------------------------------
@@ -124,68 +124,70 @@ public class Main
 			// Auto play
 			if(direction.contains("auto"))
 				recursiveHelper(game);
-			
-			// Remove Low Tiles
-			if(direction.contains("remove"))
-				game.removeLowTiles();
-
-			// Undo
-			else if(direction.equals("undo"))
-				game.undo();
-
-			// Shuffle
-			else if(direction.equals("shuffle"))
-				game.shuffle();
-
-			// Save Game
-			else if(direction.equals("save"))
-				try
-				{
-					Save.saveGame(game);
-				}
-				catch (IOException e) 
-				{
-					e.printStackTrace();
-				}
-			
-			// Load Game
-			else if(direction.equals("load"))
-				try
-				{
-					game = Save.loadGame();
-				}
-				catch (Exception e)
-				{
-					System.out.println("Error: No saved game");
-				}
-			
-			// Quit
-			else if(direction.charAt(0) == 'q')
-				game.quit();
-
-			// W or U to move up
-			else if(direction.charAt(0) == 'u' || direction.charAt(0) == 'w')
-				game.act(Location.UP);
-
-			// R or D to move right
-			else if(direction.charAt(0) == 'r' || direction.charAt(0) == 'd')
-				game.act(Location.RIGHT);
-
-			// D or S to move down
-			else if(direction.charAt(0) == 'd' || direction.charAt(0) == 's')
-				game.act(Location.DOWN);
-
-			// L or A to move left
-			else if(direction.charAt(0) == 'l' || direction.charAt(0) == 'a')
-				game.act(Location.LEFT);
-
 			else
 			{
-				System.out.println("Invalid Command");
-				System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
-			}
+				// Remove Low Tiles
+				if(direction.contains("remove"))
+					game.removeLowTiles();
 
-			System.out.println(game);
+				// Undo
+				else if(direction.equals("undo"))
+					game.undo();
+
+				// Shuffle
+				else if(direction.equals("shuffle"))
+					game.shuffle();
+
+				// Save Game
+				else if(direction.equals("save"))
+					try
+					{
+						Save.saveGame(game);
+					}
+					catch (IOException e) 
+					{
+						e.printStackTrace();
+					}
+				
+				// Load Game
+				else if(direction.equals("load"))
+					try
+					{
+						game = Save.loadGame();
+					}
+					catch (Exception e)
+					{
+						System.out.println("Error: No saved game");
+					}
+
+				// Quit
+				else if(direction.charAt(0) == 'q')
+					game.quit();
+
+				// W or U to move up
+				else if(direction.charAt(0) == 'u' || direction.charAt(0) == 'w')
+					game.act(Location.UP);
+
+				// R or D to move right
+				else if(direction.charAt(0) == 'r' || direction.charAt(0) == 'd')
+					game.act(Location.RIGHT);
+
+				// D or S to move down
+				else if(direction.charAt(0) == 'd' || direction.charAt(0) == 's')
+					game.act(Location.DOWN);
+
+				// L or A to move left
+				else if(direction.charAt(0) == 'l' || direction.charAt(0) == 'a')
+					game.act(Location.LEFT);
+
+				else
+				{
+					System.out.println("Invalid Command");
+					System.out.println("Controls: Left, Right, Up, Down, Quit, Undo, Shuffle");	
+				}
+
+				System.out.println(game);
+			}
 
 		}
 
