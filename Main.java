@@ -413,6 +413,11 @@ public class Main
 		if(! scan.nextLine().equals(""))
 			game.dynamicTileSpawning(true);
 		
+		System.out.println("Speed Mode? (Tiles appear every 2 seconds)");
+		System.out.println("Press enter for no, anything else for yes");
+		if(! scan.nextLine().equals(""))
+			game.speedMode(true);
+		
 		manualPlay(game);
 	}
 	

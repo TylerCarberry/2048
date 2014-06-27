@@ -42,6 +42,7 @@ public class Game implements java.io.Serializable
 	private double timeLeft = -1;
 	
 	private boolean survivalMode = false;
+	private boolean speedMode = false;
 	
 	// If true, any tile less than the max tile can spawn
 	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
@@ -344,7 +345,8 @@ public class Game implements java.io.Serializable
 	
 	/**
 	 * Places immovable X's in the corners of the board
-	 * This will clear any existing pieces in the corners of the board
+	 * This will bump existing pieces in the corners of the board
+	 * to random free locations
 	 */
 	public void cornerMode()
 	{
@@ -401,6 +403,45 @@ public class Game implements java.io.Serializable
 		dynamicTileSpawning = enabled;
 	}
 	
+	/**
+	 * Add a piece automatically every 2 seconds even if no move was made
+	 * @param enabled Turn speed mode on or off
+	 */
+	public void speedMode(boolean enabled)
+	{
+		speedMode = enabled;
+		
+		// Add a piece every 2 seconds
+		final int UPDATESPEED = 2;
+		
+		// Create a new thread to add the pieces
+		final Thread T = new Thread() {
+			public void run()
+			{
+				while(speedMode)
+				{
+					try
+					{
+						// Pause the thread for x milliseconds
+						// The game continues to run
+						Thread.sleep((long) (UPDATESPEED * 1000.0));
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+						e.printStackTrace();
+					}
+
+					addRandomPiece();
+					
+					printGame();
+				}
+			}
+		}; // end thread
+		
+		T.start();
+		
+	}
 	
 	
 	/**
@@ -691,6 +732,11 @@ public class Game implements java.io.Serializable
 	private void setHistory(Stack newHistory)
 	{
 		history = newHistory.clone();
+	}
+	
+	public void printGame()
+	{
+		System.out.println(toString());
 	}
 	
 	/** @return a string of the game in the form:
