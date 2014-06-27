@@ -142,10 +142,12 @@ public class Main
 				else if(direction.equals("save"))
 					try
 					{
+						System.out.println("Saving the game...");
 						Save.saveGame(game);
 					}
 					catch (IOException e) 
 					{
+						System.out.println("Error: Saved game can not be accessed");
 						e.printStackTrace();
 					}
 				
@@ -160,6 +162,19 @@ public class Main
 						System.out.println("Error: No saved game");
 					}
 
+				// Clear Save
+				else if(direction.equals("clear"))
+					try
+					{
+						System.out.println("Deleting the save...");
+						Save.clearSave();
+					}
+					catch (Exception e)
+					{
+						System.out.println("Error: Saved game can not be accessed");
+						e.printStackTrace();
+					}
+				
 				// Quit
 				else if(direction.charAt(0) == 'q')
 					game.quit();
