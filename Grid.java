@@ -95,9 +95,9 @@ public class Grid implements Cloneable, java.io.Serializable
 	}
 	
 	/**
-	 * @return A LinkedList of the empty locations
+	 * @return A list of the empty locations
 	 */
-	public LinkedList<Location> getEmptyLocations()
+	public List<Location> getEmptyLocations()
 	{
 		LinkedList<Location> empty = new LinkedList<Location>();
 		for(int row = 0; row < getNumRows(); row++)
@@ -109,9 +109,9 @@ public class Grid implements Cloneable, java.io.Serializable
 	}
 	
 	/**
-	 * @return A LinkedList of filled locations
+	 * @return A list of filled locations
 	 */
-	public LinkedList<Location> getFilledLocations()
+	public List<Location> getFilledLocations()
 	{
 		LinkedList<Location> filled = new LinkedList<Location>();
 		for(int row = 0; row < getNumRows(); row++)
