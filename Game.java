@@ -29,12 +29,8 @@ public class Game implements java.io.Serializable
 	// The time the game was started
 	private Date d1;
 	
-	// Limited number of moves
-	// -1 = unlimited
+	// Limited number of moves or undos, -1 = unlimited
 	private int movesRemaining = -1;
-	
-	// Limited number of undos
-	// -1 = unlimited
 	private int undosRemaining  = -1;
 	
 	// The time limit in seconds before the game automatically quits
@@ -50,7 +46,6 @@ public class Game implements java.io.Serializable
 	// All possible tiles have an equal chance of appearing
 	private boolean dynamicTileSpawning = false;
 	
-	
 	/**
 	 * Creates a default game with the size 4x4
 	 */
@@ -58,7 +53,6 @@ public class Game implements java.io.Serializable
 	{
 		this(4,4);
 	}
-	
 	
 	/**
 	 * @param rows The number of rows in the game
@@ -114,7 +108,6 @@ public class Game implements java.io.Serializable
 			history.push(lastBoard, score);
 			movesRemaining--;
 		}
-		
 	}
 	
 	/** 
@@ -261,11 +254,8 @@ public class Game implements java.io.Serializable
 			}
 		
 		// There are always at least 2 pieces on the board
-		if(board.getFilledLocations().size() < 2)
+		while(board.getFilledLocations().size() < 2)
 			addRandomPiece();
-		if(board.getFilledLocations().size() < 2)
-			addRandomPiece();
-		
 	}
 	
 	/**
@@ -334,11 +324,9 @@ public class Game implements java.io.Serializable
 	}
 	
 	/**
-	 * @return the time limit in seconds
-	 * This is NOT the amount of time currently left in the game, 
-	 * it is the total time limit.
+	 * @return the time left in the game
 	 */
-	public double getTimeLimit()
+	public double getTimeLeft()
 	{
 		return timeLeft;
 	}
@@ -401,9 +389,6 @@ public class Game implements java.io.Serializable
 	public void zenMode(boolean enabled)
 	{
 		zenMode = enabled;
-		
-		System.out.println(zenMode);
-		
 		dynamicTileSpawning(enabled);
 	}
 	
@@ -454,7 +439,6 @@ public class Game implements java.io.Serializable
 		T.start();
 	}
 	
-	
 	/**
 	 * All tiles appear as ?
 	 * @param SECONDS The time to hide the values. -1 for unlimited
@@ -462,7 +446,7 @@ public class Game implements java.io.Serializable
 	public void hideTileValues(final int SECONDS)
 	{
 		board.hideTileValues(true);
-
+		
 		if(SECONDS >= 0)
 		{
 			// Create a new thread to show the tiles
@@ -483,16 +467,13 @@ public class Game implements java.io.Serializable
 					
 					// Unhide the tiles after the time limit
 					board.hideTileValues(false);
-					
 					printGame();
-					
 				}
 			}; // end thread
 
 			T.start();
 		}
 	}
-	
 	
 	/**
 	 *  Limit the number of undos
@@ -574,21 +555,22 @@ public class Game implements java.io.Serializable
 		}
 	}
 	
+	/**
+	 * Adds a specified tile to the board in a random location
+	 * @param tile The number tile to add
+	 */
 	private void addRandomPiece(int tile)
 	{
 		// A list of the empty spaces on the board
 		List<Location> empty = board.getEmptyLocations();
 
 		// If there are no empty pieces on the board don't do anything
-		if(empty.isEmpty())
-			return;
-		
-		int randomLoc = (int) (Math.random() * empty.size());
-		
-		board.set(empty.get(randomLoc), tile);
+		if(! empty.isEmpty())
+		{
+			int randomLoc = (int) (Math.random() * empty.size());
+			board.set(empty.get(randomLoc), tile);
+		}
 	}
-
-	
 	
 	/**
 	 * @return Whether or not the game is won
@@ -598,7 +580,6 @@ public class Game implements java.io.Serializable
 	{
 		return won(2048);
 	}
-	
 	
 	/**
 	 * @param winningTile The target tile
@@ -710,8 +691,8 @@ public class Game implements java.io.Serializable
 	/**
 	 * @param otherGame The other game to check
 	 * @return If the games are equal
-	 * Games are equal if they have the same board and score.
-	 * Even if their history is different.
+	 * Games are equal if they have the same board and score, 
+	 * even if their history is different.
 	 */
 	public boolean equals(Game otherGame)
 	{
@@ -719,7 +700,7 @@ public class Game implements java.io.Serializable
 	}
 	
 	/**
-	 * Used to avoid creating aliases
+	 * Used to avoid creating aliases 
 	 * @return A clone of the game
 	 */
 	public Game clone()
@@ -731,7 +712,6 @@ public class Game implements java.io.Serializable
 		game.setTurn(turnNumber);
 		return game;
 	}
-	
 
 	/**
 	 * @param direction Called using the final variables in the location class
@@ -768,21 +748,41 @@ public class Game implements java.io.Serializable
 		return board;
 	}
 	
+	/**
+	 * Sets the turn number
+	 * Only used by the clone method
+	 * @param newTurn The new turn number
+	 */
 	private void setTurn(int newTurn)
 	{
 		turnNumber = newTurn;
 	}
 	
+	/**
+	 * Sets the grid
+	 * Only used by the clone method
+	 * @param newGrid The new game board
+	 */
 	private void setGrid(Grid newGrid)
 	{
 		board = newGrid.clone();
 	}
 	
+	/**
+	 * Sets the score
+	 * Only used by the clone method
+	 * @param newScore The new game score
+	 */
 	private void setScore(int newScore)
 	{
 		score = newScore;
 	}
 	
+	/**
+	 * Sets the score
+	 * Only used by the clone method
+	 * @param newHistory A stack of the new game history
+	 */
 	private void setHistory(Stack newHistory)
 	{
 		history = newHistory.clone();
