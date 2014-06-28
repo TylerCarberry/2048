@@ -43,6 +43,7 @@ public class Game implements java.io.Serializable
 	
 	private boolean survivalMode = false;
 	private boolean speedMode = false;
+	private boolean zenMode = false;
 	
 	// If true, any tile less than the max tile can spawn
 	// Ex. If the highest piece is 32 then a 2,4,8, or 16 can appear
@@ -125,31 +126,32 @@ public class Game implements java.io.Serializable
 	private void move(Location from, int direction)
 	{
 		// Do not move X spaces or 0 spaces
-		if(board.get(from) == -1 || board.get(from) == 0) return;
-				
-		Location to = from.getAdjacent(direction);
-		while(board.isValid(to))
-		{
-			// If the new position is empty, move
-			if(board.isEmpty(to))
+		if(board.get(from) != -1 && board.get(from) != 0)
+		{	
+			Location to = from.getAdjacent(direction);
+			while(board.isValid(to))
 			{
-				board.move(from, to);
-				from = to.clone();
-				to = to.getAdjacent(direction);
-			}
-			
-			// If the new position has a piece
-			else
-			{
-				// If they have the same value, combine
-				if(board.get(from) == board.get(to))
-					add(from, to);
-				return;
+				// If the new position is empty, move
+				if(board.isEmpty(to))
+				{
+					board.move(from, to);
+					from = to.clone();
+					to = to.getAdjacent(direction);
+				}
+
+				// If the new position has a piece
+				else
+				{
+					// If they have the same value or if zenMode is enabled, combine
+					if(board.get(from) == board.get(to) || zenMode)
+						add(from, to);
+					
+					return;
+				}
 			}
 		}
 	}
-		
-		
+	
 	
 	/**
 	 * Adds piece "from" into piece "to", 4 4 -> 0 8
@@ -162,9 +164,8 @@ public class Game implements java.io.Serializable
 		if(survivalMode && board.get(from) >= 8)
 			timeLeft += board.get(from) / 4;
 		
-		
-		score += board.get(to) * 2;
-		board.set(to, board.get(to) * 2);
+		score += board.get(to) + board.get(from);
+		board.set(to, board.get(to) + board.get(from));
 		board.set(from, 0);
 	}
 	
@@ -395,6 +396,15 @@ public class Game implements java.io.Serializable
 		// If no time limit is in effect, set it to 30 seconds
 		if(timeLeft <= 0)
 			timeLeft = 30;
+	}
+	
+	public void zenMode(boolean enabled)
+	{
+		zenMode = enabled;
+		
+		System.out.println(zenMode);
+		
+		dynamicTileSpawning(enabled);
 	}
 	
 	/**
@@ -778,7 +788,10 @@ public class Game implements java.io.Serializable
 		history = newHistory.clone();
 	}
 	
-	public void printGame()
+	/**
+	 * Only used in the hideTileValues and speedMode methods to print the game
+	 */
+	private void printGame()
 	{
 		System.out.println(toString());
 	}

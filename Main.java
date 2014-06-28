@@ -52,20 +52,26 @@ public class Main
 		System.out.println("\tMovable X tile that can't be combined");
 		System.out.println("7. Corner Mode");
 		System.out.println("\tImmovable Blocks In Corners");
-		System.out.println("8. Crazy Mode");
+		System.out.println("8. Speed Mode");
+		System.out.println("\tTiles appear every 2 seconds");
+		System.out.println("9. Zen Mode");
+		System.out.println("\tAll ties can combine. Impossible to lose");
+		System.out.println("10. Crazy Mode");
 		System.out.println("\t5x5 grid, with every mode enabled");
-		System.out.println("9. Custom Game");
-		System.out.println("0. Autoplay");
+		
+		System.out.println("11. Custom Game");
+		System.out.println("12. Autoplay");
 		
 		input = getIntegerInput(0, 9, "Incorrect input. Enter 1 through 9 with no punctuation");
 		
 		// Autoplay
-		if(input == 0)
+		if(input == 12)
 		{
 			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");	
 			input = getIntegerInput(1, 4, "Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
 
 			Game game = new Game(4,4);
+
 						
 			switch(input)
 			{
@@ -95,13 +101,25 @@ public class Main
 			switch(input)
 			{
 				case 1: practiceMode();
+						break;
 				case 2: normalMode();
+						break;
 				case 3: proMode();
+						break;
 				case 4: rushMode();
+						break;
 				case 5: survivalMode();
+						break;
 				case 6: XMode();
+						break;
 				case 7: cornerMode();
-				case 8: crazyMode();
+						break;
+				case 8: speedMode();
+						break;
+				case 9: zenMode();
+						break;
+				case 10: crazyMode();
+						break;
 				default: customManualPlay();
 			}
 		}
@@ -113,6 +131,8 @@ public class Main
 	//---------------------------------------------------------
 	public static void manualPlay(Game game)
 	{	
+		game.zenMode(true);
+		
 		String direction = "";
 
 		System.out.println(game);
@@ -214,6 +234,7 @@ public class Main
 				}
 
 				System.out.println(game);
+				
 			}
 		}
 
@@ -349,10 +370,39 @@ public class Main
 
 		manualPlay(game);
 	}
+	
+	// Speed Mode
+	// Unlimited moves and time
+	// 10 undos
+	// Tiles appear every every 2 seconds even if no move was made
+	public static void speedMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(-1);
+		game.setTimeLimit(-1);
+		game.speedMode(true);
+		
+		manualPlay(game);
+	}
 
+	// Zen Mode
+	// Unlimited moves, undos and time
+	// Every piece can combine
+	public static void zenMode()
+	{
+		Game game = new Game();
+		game.setMoveLimit(-1);
+		game.setUndoLimit(-1);
+		game.setTimeLimit(-1);
+		game.zenMode(true);
+
+		manualPlay(game);
+	}
+	
 	// Crazy Mode
 	// Unlimited moves and undos
-	// A 5x5 game with every other mode enabled
+	// A 5x5 game with every other mode enabled (except zen)
 	public static void crazyMode()
 	{
 		Game game = new Game(5,5);
