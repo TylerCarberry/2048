@@ -23,8 +23,9 @@ at https://github.com/gabrielecirulli/2048
 5. Survival Mode: 30 seconds. Combine tiles for more time
 6. XMode: Movable X tile that can't be combined
 7. Corner Mode: Immovable Blocks In Corners
-8. Crazy Mode: 5x5 grid, Corner, X, and Survival modes
-9. Custom Game: Customize everything about the game seen above
+8. Speed Mode: Tiles appear every 2 seconds even if no move was made
+9. Crazy Mode: A 5x5 grid with every other mode enabled
+10. Custom Game: Customize everything about the game seen above
 
 ## Autoplay 
 
