@@ -52,7 +52,7 @@ public class Main
 		System.out.println("7. Corner Mode");
 		System.out.println("\tImmovable Blocks In Corners");
 		System.out.println("8. Crazy Mode");
-		System.out.println("\t5x5 grid, Corner, X, and Survival modes");
+		System.out.println("\t5x5 grid, with every mode enabled");
 		System.out.println("9. Custom Game");
 		System.out.println("0. Autoplay");
 		
@@ -112,11 +112,11 @@ public class Main
 	//---------------------------------------------------------
 	public static void manualPlay(Game game)
 	{	
-		String direction;
+		String direction = "";
 
 		System.out.println(game);
 
-		while(!(game.lost()))
+		while(!(game.lost() || direction.contains("auto")))
 		{
 			direction = scan.next();
 			direction = direction.toLowerCase();
@@ -306,7 +306,7 @@ public class Main
 	// Corner Mode
 	// Unlimited moves and time
 	// 10 undos
-	// Places immovable pieces in the corners of th board
+	// Places immovable pieces in the corners of the board
 	public static void cornerMode()
 	{
 		Game game = new Game();
@@ -320,7 +320,7 @@ public class Main
 
 	// Crazy Mode
 	// Unlimited moves and undos
-	// A 5x5 game with Survival Mode, XMode, and Corner Mode
+	// A 5x5 game with every other mode enabled
 	public static void crazyMode()
 	{
 		Game game = new Game(5,5);
@@ -428,9 +428,13 @@ public class Main
 	//---------------------------------------------------------
 	public static void recursiveHelper(Game game)
 	{
+		// Turn speed mode off because it interferes with autoplay
+		game.speedMode(false);
+		
 		System.out.println("Play until which tile is reached?");
 		System.out.println("(Values above 2048 are not recommended)");
 		int tile = scan.nextInt();
+		
 		Autoplay.recursivePlay(game, game, tile, true);
 		System.out.println("**** GAME WON ****");
 		System.out.println("Total Number of Moves: " + Autoplay.getAutoMoveCount());
