@@ -62,7 +62,7 @@ public class Main
 		System.out.println("11. Custom Game");
 		System.out.println("12. Autoplay");
 		
-		input = getIntegerInput(0, 9, "Incorrect input. Enter 1 through 9 with no punctuation");
+		input = getIntegerInput(1, 12, "Incorrect input. Enter 1 through 12 with no punctuation");
 		
 		// Autoplay
 		if(input == 12)
@@ -131,10 +131,11 @@ public class Main
 	//---------------------------------------------------------
 	public static void manualPlay(Game game)
 	{	
-		game.zenMode(true);
-		
 		String direction = "";
-
+		
+		// Used to prevent printing Congratulations every move after it is won
+		boolean winningGame = false;
+		
 		System.out.println(game);
 
 		while(!(game.lost() || direction.contains("auto")))
@@ -235,6 +236,13 @@ public class Main
 
 				System.out.println(game);
 				
+				// If the game is won
+				if(game.won() && winningGame == false)
+				{
+					System.out.println("Congratulations! Game Won!");
+					System.out.println("Continuing in free play mode.");
+					winningGame = true;
+				}
 			}
 		}
 
