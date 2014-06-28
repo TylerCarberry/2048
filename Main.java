@@ -5,6 +5,7 @@
  * at https://github.com/gabrielecirulli/2048
  */
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -130,8 +131,8 @@ public class Main
 				if(direction.contains("remove"))
 					game.removeLowTiles();
 				
-				// Remove Low Tiles
-				if(direction.contains("hide"))
+				// Hide Tile Values
+				else if(direction.contains("hide"))
 					game.hideTileValues(5);
 
 				// Undo
@@ -161,10 +162,17 @@ public class Main
 					{
 						game = Save.loadGame();
 					}
-					catch (Exception e)
+					catch(IOException e)
 					{
-						System.out.println("Error: No saved game");
+						System.out.println("Error: Save file cannot be accessed");
+						e.printStackTrace();
 					}
+					catch (ClassNotFoundException e)
+					{
+						System.out.println("Error: Cannot read save file");
+						e.printStackTrace();
+					}
+					
 
 				// Clear Save
 				else if(direction.equals("clear"))
@@ -173,9 +181,9 @@ public class Main
 						System.out.println("Deleting the save...");
 						Save.clearSave();
 					}
-					catch (Exception e)
+					catch (IOException e)
 					{
-						System.out.println("Error: Saved game can not be accessed");
+						System.out.println("Error: Save file can not be accessed");
 						e.printStackTrace();
 					}
 				
@@ -207,11 +215,26 @@ public class Main
 
 				System.out.println(game);
 			}
-
 		}
 
 		// When the game is over
+		
+		// Save the score if it is higher than the previous high score
+		try
+		{
+			if(game.getScore() > Save.loadHighScore())
+			{
+				System.out.println("Congratulations! New High Score: " + game.getScore());
+				Save.saveHighScore(game.getScore());
+			}
+		}
+		catch (FileNotFoundException e)
+		{
+			System.out.println("Error: High score save file cannot be accessed");
+			e.printStackTrace();
+		}
 
+		// Calculate the time played
 		int milliseconds = (int) (game.timePlayed() * 1000);
 		int seconds = (int) (milliseconds / 1000) % 60 ;
 		int minutes = (int) (milliseconds / (1000*60));
