@@ -233,25 +233,30 @@ public class Main
 			System.out.println("Error: High score save file cannot be accessed");
 			e.printStackTrace();
 		}
+		
+		// If no move has been made don't print the time played
+		if(game.timePlayed() != 0)
+		{
+			// Calculate the time played
+			int milliseconds = (int) (game.timePlayed() * 1000);
+			int seconds = (int) (milliseconds / 1000) % 60 ;
+			int minutes = (int) (milliseconds / (1000*60));
+			milliseconds -= seconds * 60;
 
-		// Calculate the time played
-		int milliseconds = (int) (game.timePlayed() * 1000);
-		int seconds = (int) (milliseconds / 1000) % 60 ;
-		int minutes = (int) (milliseconds / (1000*60));
-		milliseconds -= seconds * 60;
+			// Round the time to the nearest millisecond
+			// Prevent precision errors (0.89999999999 seconds)
+			String milli = "" + milliseconds;
+			milli = "." + milli.substring(0,3);
 
-		// Round the time to the nearest millisecond
-		// Prevent precision errors (0.89999999999 seconds)
-		String milli = "" + milliseconds;
-		milli = "." + milli.substring(0,3);
+			System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
 
-		System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
+		}
 
 		// This is needed to stop the game even if the time limit is not up
 		// The 0 means that there were no errors
 		System.exit(0);
 	}
-	
+
 	// Practice Mode
 	// Unlimited everything
 	public static void practiceMode()
@@ -437,7 +442,7 @@ public class Main
 		if(! scan.nextLine().equals(""))
 			game.XMode();
 		
-		System.out.println("Dynamic Tile Spawning? (Higher value tiles can appear)");
+		System.out.println("Rush Mode? (Higher value tiles can appear)");
 		System.out.println("Press enter for no, anything else for yes");
 		if(! scan.nextLine().equals(""))
 			game.dynamicTileSpawning(true);
@@ -468,6 +473,7 @@ public class Main
 	}
 	
 	/**
+	 * Used to get input when choosing a number
 	 * @param minValue The lowest value that the input can have
 	 * @param maxValue The highest value that the input can have
 	 * @param errorMessage Printed when invalid input entered
@@ -502,16 +508,15 @@ public class Main
 			else
 				isValid = true;
 
-			
 		} while(!isValid);
 	
-		return input;
-	
+		return input;	
 	}
 	
 	/**
 	 * Used to get input for the time limit, undo limit, and time limit
-	 * @return The limit. (An integer -1 or greater)
+	 * Valid input is an integer 0 or greater or an empty string
+	 * @return The valid limit. (An integer -1 or greater)
 	 */
 	public static int getLimitInput()
 	{

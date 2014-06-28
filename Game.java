@@ -662,6 +662,10 @@ public class Game implements java.io.Serializable
 	 */
 	public double timePlayed()
 	{
+		// If no move has been made yet
+		if(d1 == null)
+			return 0;
+		
 		Date d2 = new Date();
 		double seconds = ((d2.getTime() - d1.getTime()) / 1000.0);
 		return seconds;
