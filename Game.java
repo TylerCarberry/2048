@@ -289,7 +289,6 @@ public class Game implements java.io.Serializable
 	/**
 	 * Starts the time limit
 	 * Is called after the first move
-	 * Precondition
 	 * */
 	private void activateTimeLimit()
 	{	
@@ -398,6 +397,9 @@ public class Game implements java.io.Serializable
 			timeLeft = 30;
 	}
 	
+	/**
+	 * Higher value tiles appear
+	 */
 	public void dynamicTileSpawning(boolean enabled)
 	{
 		dynamicTileSpawning = enabled;
@@ -440,7 +442,45 @@ public class Game implements java.io.Serializable
 		}; // end thread
 		
 		T.start();
-		
+	}
+	
+	
+	/**
+	 * All tiles appear as ?
+	 * @param SECONDS The time to hide the values. -1 for unlimited
+	 */
+	public void hideTileValues(final int SECONDS)
+	{
+		board.hideTileValues(true);
+
+		if(SECONDS >= 0)
+		{
+			// Create a new thread to show the tiles
+			final Thread T = new Thread() {
+				public void run()
+				{
+					try
+					{
+						// Pause the thread for x milliseconds
+						// The game continues to run
+						Thread.sleep((long) (SECONDS * 1000.0));
+					}
+					catch (Exception e)
+					{
+						System.out.println(e);
+						e.printStackTrace();
+					}
+					
+					// Unhide the tiles after the time limit
+					board.hideTileValues(false);
+					
+					printGame();
+					
+				}
+			}; // end thread
+
+			T.start();
+		}
 	}
 	
 	

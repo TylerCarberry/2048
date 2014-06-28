@@ -5,6 +5,7 @@ public class Grid implements Cloneable, java.io.Serializable
 {
 	private static final long serialVersionUID = -5760271435893128475L;
 	private int[][] board;
+	private boolean hideTileValues = false;
 	
 	/** Constructor
 	 * @param rows The number of rows in the grid
@@ -195,6 +196,8 @@ public class Grid implements Cloneable, java.io.Serializable
 	
 	/**
 	 * @return The string representation of the grid
+	 * Even Spacing
+	 * | 4  | 16 | 256|1028|
 	 */
 	public String toString()
 	{
@@ -208,11 +211,19 @@ public class Grid implements Cloneable, java.io.Serializable
 			{
 				loc = new Location (row, col);
 				
-				// Even Spacing
-				// | 4  | 16 | 256|1028|
+				if(hideTileValues)
+				{
+					if(get(loc) == 0)
+						output += "|    ";
+					else if(get(loc) == -1)
+						output += "|XXXX";
+					else
+						output += "|  ? ";
+					
+				}
 				
 				// In X tile mode the X tile is represented as -2
-				if(get(loc) == -2)
+				else if(get(loc) == -2)
 					output += "|  x ";
 				// In corner mode the blocks are represented as -1
 				else if(get(loc) == -1)
@@ -227,12 +238,16 @@ public class Grid implements Cloneable, java.io.Serializable
 					output += "| " + get(loc) + " ";
 				else
 					output += "| " + get(loc) + "  ";
-			
 			}
 			
 			output+= "|\n";
 		}
 		
 		return output;
+	}
+
+	public void hideTileValues(boolean enabled)
+	{
+		hideTileValues = enabled;
 	}
 }

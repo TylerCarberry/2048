@@ -129,6 +129,10 @@ public class Main
 				// Remove Low Tiles
 				if(direction.contains("remove"))
 					game.removeLowTiles();
+				
+				// Remove Low Tiles
+				if(direction.contains("hide"))
+					game.hideTileValues(5);
 
 				// Undo
 				else if(direction.equals("undo"))
