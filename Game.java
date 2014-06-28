@@ -16,10 +16,12 @@ public class Game implements java.io.Serializable
 	private Stack history;
 	
 	// The chance of a 2 appearing
-	public final double CHANCE_OF_2 = .90;
+	public static final double CHANCE_OF_2 = .90;
 	
 	private int score = 0;
 	private int turnNumber = 0;
+	
+	// If the game was quit
 	private boolean quitGame = false;
 	
 	// Used to start the time limit on the first move
@@ -72,6 +74,31 @@ public class Game implements java.io.Serializable
 		// Adds 2 pieces to the board
 		addRandomPiece();
 		addRandomPiece();
+	}
+	
+	/**
+	 * Creates a new game as a clone. 
+	 * Only used by the clone method
+	 * @param toClone The game to clone
+	 */
+	private Game(Game toClone)
+	{
+		board = toClone.board.clone();
+		turnNumber = toClone.turnNumber;
+		score = toClone.score;
+		history = toClone.history.clone();
+		
+		movesRemaining = toClone.movesRemaining;
+		undosRemaining = toClone.undosRemaining;
+		timeLeft = toClone.timeLeft;
+		d1 = toClone.d1;
+		
+		quitGame = toClone.quitGame;
+		newGame = toClone.newGame;
+		survivalMode = toClone.survivalMode;
+		speedMode = toClone.speedMode;
+		zenMode = toClone.zenMode;
+		
 	}
 	
 	/**
@@ -705,11 +732,7 @@ public class Game implements java.io.Serializable
 	 */
 	public Game clone()
 	{
-		Game game = new Game();
-		game.setGrid(board.clone());
-		game.setScore(score);
-		game.setHistory(history.clone());
-		game.setTurn(turnNumber);
+		Game game = new Game(this);
 		return game;
 	}
 
@@ -746,46 +769,6 @@ public class Game implements java.io.Serializable
 	public Grid getGrid()
 	{
 		return board;
-	}
-	
-	/**
-	 * Sets the turn number
-	 * Only used by the clone method
-	 * @param newTurn The new turn number
-	 */
-	private void setTurn(int newTurn)
-	{
-		turnNumber = newTurn;
-	}
-	
-	/**
-	 * Sets the grid
-	 * Only used by the clone method
-	 * @param newGrid The new game board
-	 */
-	private void setGrid(Grid newGrid)
-	{
-		board = newGrid.clone();
-	}
-	
-	/**
-	 * Sets the score
-	 * Only used by the clone method
-	 * @param newScore The new game score
-	 */
-	private void setScore(int newScore)
-	{
-		score = newScore;
-	}
-	
-	/**
-	 * Sets the score
-	 * Only used by the clone method
-	 * @param newHistory A stack of the new game history
-	 */
-	private void setHistory(Stack newHistory)
-	{
-		history = newHistory.clone();
 	}
 	
 	/**
