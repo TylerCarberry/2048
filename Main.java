@@ -13,77 +13,77 @@ public class Main
 {
 	// All methods can use the scanner without declaring it each time
 	private static Scanner scan = new Scanner (System.in);
-	
+
 	public static void main(String[] args)
 	{	
 		int input = -1;
-
-		// Intro to game
-		System.out.println("|| --------------------------------------- ||");
-		System.out.println("||  Welcome to 2048 ||  By Tyler Carberry  ||");
-		System.out.println("|| --------------------------------------- ||");
-		System.out.println("||               How To Play               ||");
-		System.out.println("||  Combine similar numbers to reach 2048  ||");
-		System.out.println("|| --------------------------------------- ||");
-		System.out.println("||                Controls                 ||");
-		System.out.println("||       Left, Right, Up, Down, Quit       ||");
-		System.out.println("|| --------------------------------------- ||");
-		System.out.println("||    Type the first letter of your move   ||");
-		System.out.println("||        and press enter (l,r,u,d)        ||");
-		System.out.println("|| **** YOU CANNOT USE THE ARROW KEYS **** ||");
-		System.out.println("|| --------------------------------------- ||");
-		System.out.println("||                Power Ups                ||");
-		System.out.println("||         Shuffle, Undo, Autoplay,        ||");
-		System.out.println("||            Remove Low Tiles             ||");
-		System.out.println("||    Type the full word and press enter   ||");
-		System.out.println("|| --------------------------------------- ||");
-		System.out.println();
-		System.out.println("1. Practice Mode");
-		System.out.println("\tUnlimited Everything");
-		System.out.println("2. Normal Mode");
-		System.out.println("\t10 Undos");
-		System.out.println("3. Pro Mode");
-		System.out.println("\tNo Undos");
-		System.out.println("4. Rush Mode");
-		System.out.println("\tHigher value tiles will spawn");
-		System.out.println("5. Survival Mode");
-		System.out.println("\t30 seconds. Combine tiles for more time");
-		System.out.println("6. XMode");
-		System.out.println("\tMovable X tile that can't be combined");
-		System.out.println("7. Corner Mode");
-		System.out.println("\tImmovable Blocks In Corners");
-		System.out.println("8. Speed Mode");
-		System.out.println("\tTiles appear every 2 seconds");
-		System.out.println("9. Zen Mode");
-		System.out.println("\tAll ties can combine. Impossible to lose");
-		System.out.println("10. Crazy Mode");
-		System.out.println("\t5x5 grid, with every mode enabled");
-		
-		System.out.println("11. Custom Game");
-		System.out.println("12. Autoplay");
-		
-		input = getIntegerInput(1, 12, "Incorrect input. Enter 1 through 12 with no punctuation");
-		
-		// Autoplay
-		if(input == 12)
+		do
 		{
-			System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");	
-			input = getIntegerInput(1, 4, "Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
+			// Intro to game
+			System.out.println("|| --------------------------------------- ||");
+			System.out.println("||  Welcome to 2048 ||  By Tyler Carberry  ||");
+			System.out.println("|| --------------------------------------- ||");
+			System.out.println("||               How To Play               ||");
+			System.out.println("||  Combine similar numbers to reach 2048  ||");
+			System.out.println("|| --------------------------------------- ||");
+			System.out.println("||                Controls                 ||");
+			System.out.println("||       Left, Right, Up, Down, Quit       ||");
+			System.out.println("|| --------------------------------------- ||");
+			System.out.println("||    Type the first letter of your move   ||");
+			System.out.println("||        and press enter (l,r,u,d)        ||");
+			System.out.println("|| **** YOU CANNOT USE THE ARROW KEYS **** ||");
+			System.out.println("|| --------------------------------------- ||");
+			System.out.println("||                Power Ups                ||");
+			System.out.println("||         Shuffle, Undo, Autoplay,        ||");
+			System.out.println("||            Remove Low Tiles             ||");
+			System.out.println("||    Type the full word and press enter   ||");
+			System.out.println("|| --------------------------------------- ||");
+			System.out.println();
+			System.out.println("1. Practice Mode");
+			System.out.println("\tUnlimited Everything");
+			System.out.println("2. Normal Mode");
+			System.out.println("\t10 Undos");
+			System.out.println("3. Pro Mode");
+			System.out.println("\tNo Undos");
+			System.out.println("4. Rush Mode");
+			System.out.println("\tHigher value tiles will spawn");
+			System.out.println("5. Survival Mode");
+			System.out.println("\t30 seconds. Combine tiles for more time");
+			System.out.println("6. XMode");
+			System.out.println("\tMovable X tile that can't be combined");
+			System.out.println("7. Corner Mode");
+			System.out.println("\tImmovable Blocks In Corners");
+			System.out.println("8. Speed Mode");
+			System.out.println("\tTiles appear every 2 seconds");
+			System.out.println("9. Zen Mode");
+			System.out.println("\tAll ties can combine. Impossible to lose");
+			System.out.println("10. Crazy Mode");
+			System.out.println("\t5x5 grid, with every mode enabled");
+			System.out.println("11. Custom Game");
+			System.out.println("12. Autoplay");
 
-			Game game = new Game(4,4);
+			input = getIntegerInput(1, 12, "Incorrect input. Enter 1 through 12 with no punctuation");
 
-						
-			switch(input)
+			// Autoplay
+			if(input == 12)
 			{
+				System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");	
+				input = getIntegerInput(1, 4, "Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
+
+				Game game = new Game(4,4);
+
+
+				switch(input)
+				{
 				case 1: recursiveHelper(game);
-						break;
+				break;
 				case 2: Autoplay.circlePlay(game);
-						break;
+				break;
 				case 3: Autoplay.cornerPlay(game);
-						break;
+				break;
 				case 4: Autoplay.randomPlay(game);
-						break;
-			
+				break;
+
 				default:
 				{	
 					System.out.println("\nTesting the recursive play");
@@ -94,36 +94,39 @@ public class Main
 						Autoplay.setAutoMoveCount(0);
 					}
 				}
+				}
 			}
-		}
-		else
-		{
-			switch(input)
+			else
 			{
+				switch(input)
+				{
 				case 1: practiceMode();
-						break;
+				break;
 				case 2: normalMode();
-						break;
+				break;
 				case 3: proMode();
-						break;
+				break;
 				case 4: rushMode();
-						break;
+				break;
 				case 5: survivalMode();
-						break;
+				break;
 				case 6: XMode();
-						break;
+				break;
 				case 7: cornerMode();
-						break;
+				break;
 				case 8: speedMode();
-						break;
+				break;
 				case 9: zenMode();
-						break;
+				break;
 				case 10: crazyMode();
-						break;
+				break;
 				default: customManualPlay();
+				}
 			}
+			
+			System.out.println("Play again? y/n");
 		}
-
+		while(scan.next().charAt(0) == 'y');
 	}
 
 	//---------------------------------------------------------
@@ -215,9 +218,9 @@ public class Main
 				// W or U to move up
 				else if(direction.charAt(0) == 'u' || direction.charAt(0) == 'w')
 					game.act(Location.UP);
-
+				
 				// R or D to move right
-				else if(direction.charAt(0) == 'r' || direction.charAt(0) == 'd')
+				else if(direction.charAt(0) == 'r') // || direction.charAt(0) == 'd')
 					game.act(Location.RIGHT);
 
 				// D or S to move down
@@ -278,12 +281,11 @@ public class Main
 			milli = "." + milli.substring(0,3);
 
 			System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
-
 		}
 
 		// This is needed to stop the game even if the time limit is not up
 		// The 0 means that there were no errors
-		System.exit(0);
+		//System.exit(0);
 	}
 
 	// Practice Mode
