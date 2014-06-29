@@ -64,66 +64,34 @@ public class Main
 
 			input = getIntegerInput(1, 12, "Incorrect input. Enter 1 through 12 with no punctuation");
 
-			// Autoplay
-			if(input == 12)
+			switch(input)
 			{
-				System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");	
-				input = getIntegerInput(1, 4, "Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
-
-				Game game = new Game(4,4);
-
-
-				switch(input)
-				{
-				case 1: recursiveHelper(game);
-				break;
-				case 2: Autoplay.circlePlay(game);
-				break;
-				case 3: Autoplay.cornerPlay(game);
-				break;
-				case 4: Autoplay.randomPlay(game);
-				break;
-
-				default:
-				{	
-					System.out.println("\nTesting the recursive play");
-					for(int i = 0; i < 1000; i++)
-					{
-						Autoplay.recursivePlay(game.clone(), game.clone(), 2048, true);
-						System.out.println(Autoplay.getAutoMoveCount());
-						Autoplay.setAutoMoveCount(0);
-					}
-				}
-				}
-			}
-			else
-			{
-				switch(input)
-				{
 				case 1: practiceMode();
-				break;
+						break;
 				case 2: normalMode();
-				break;
+						break;
 				case 3: proMode();
-				break;
+						break;
 				case 4: rushMode();
-				break;
+						break;
 				case 5: survivalMode();
-				break;
+						break;
 				case 6: XMode();
-				break;
+						break;
 				case 7: cornerMode();
-				break;
+						break;
 				case 8: speedMode();
-				break;
+						break;
 				case 9: zenMode();
-				break;
+						break;
 				case 10: crazyMode();
-				break;
-				default: customManualPlay();
-				}
+						break;
+				case 11: customManualPlay();
+						break;
+				case 12: autoplayMode(new Game());
+						break;
 			}
-			
+
 			System.out.println("Play again? y/n");
 		}
 		while(scan.next().charAt(0) == 'y');
@@ -146,9 +114,10 @@ public class Main
 			direction = scan.next();
 			direction = direction.toLowerCase();
 
-			// Auto play
+			// Autoplay is in a separate code block so that the game is not
+			// printed again after it is finished
 			if(direction.contains("auto"))
-				recursiveHelper(game);
+				autoplayMode(game);
 			else
 			{
 				// Remove Low Tiles
@@ -282,10 +251,6 @@ public class Main
 
 			System.out.println("Time Played: " + minutes + " minutes " + (seconds + milli) + " seconds");
 		}
-
-		// This is needed to stop the game even if the time limit is not up
-		// The 0 means that there were no errors
-		//System.exit(0);
 	}
 
 	// Practice Mode
@@ -437,33 +402,11 @@ public class Main
 	{
 		int limit;
 		
-		System.out.println("Enter the dimentions of the grid (Recommended 4 4)");
-		int rows = -1;
-		int cols = -1;
+		System.out.println("Enter the number of rows. Recommended: 4");
+		int rows = 	getIntegerInput(1, 100, "Error: Enter a valid number of rows");
 		
-		// Error trapping for the dimensions of the grid
-		while(cols < 1 || rows < 1)
-		{
-			try
-			{
-				rows = scan.nextInt();
-				cols = scan.nextInt();
-			}
-			
-			// If a string is entered instead
-			catch(InputMismatchException e)
-			{
-				// Clears the invalid input
-				scan.next();
-			}
-		
-			if (cols < 1 || rows < 1)
-			{
-				System.out.println("Incorrect input. Enter the number of rows and columns.");
-				rows = -1;
-				cols = -1;
-			}
-		}
+		System.out.println("Enter the number of columns. Recommended: 4");
+		int cols = 	getIntegerInput(1, 100, "Error: Enter a valid number of columns");
 		
 		Game game = new Game(rows,cols);
 		
@@ -515,6 +458,36 @@ public class Main
 		manualPlay(game);
 	}
 	
+	public static void autoplayMode(Game game)
+	{
+		System.out.println("Recursive, Circle, Corner, or Random? 1/2/3/4");	
+		int input = getIntegerInput(1, 4, "Incorrect input. Enter 1, 2, 3 or 4 with no punctuation");
+
+		switch(input)
+		{
+			case 1: recursiveHelper(game);
+					break;
+			case 2: Autoplay.circlePlay(game);
+					break;
+			case 3: Autoplay.cornerPlay(game);
+					break;
+			case 4: Autoplay.randomPlay(game);
+					break;
+			
+			default:
+			{	
+				System.out.println("Developer Mode Enabled");
+				System.out.println("Testing the recursive play");
+				for(int i = 0; i < 100; i++)
+				{
+					Autoplay.recursivePlay(game.clone(), game.clone(), 2048, true);
+					System.out.println(Autoplay.getAutoMoveCount());
+					Autoplay.setAutoMoveCount(0);
+				}
+			}
+		}
+	}
+	
 	//---------------------------------------------------------
 	// Calls the recursive play method
 	//---------------------------------------------------------
@@ -525,7 +498,7 @@ public class Main
 		
 		System.out.println("Play until which tile is reached?");
 		System.out.println("(Values above 2048 are not recommended)");
-		int tile = scan.nextInt();
+		int tile = getIntegerInput(0, 17000, "Error: Enter the target tile");
 		
 		Autoplay.recursivePlay(game, game, tile, true);
 		System.out.println("**** GAME WON ****");
