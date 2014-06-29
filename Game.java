@@ -319,7 +319,7 @@ public class Game implements java.io.Serializable
 		final Thread T = new Thread() {
 			public void run()
 			{
-				while(timeLeft > 0)
+				while(timeLeft > 0 && !lost())
 				{
 					try
 					{
@@ -332,7 +332,7 @@ public class Game implements java.io.Serializable
 						System.err.println(e);
 						System.err.println(Thread.currentThread().getStackTrace());
 					}
-
+					
 					timeLeft -= UPDATESPEED;
 					
 					// Round the time to the second decimal place
@@ -341,9 +341,12 @@ public class Game implements java.io.Serializable
 				}
 				
 				// After the time limit is up, quit the game
-				System.out.println("Time Limit Reached");
-				quitGame = true;   
 				
+				if(! lost())
+				{
+					System.out.println("Time Limit Reached");
+					quitGame = true;   
+				}
 			}
 		}; // end thread
 
@@ -705,13 +708,12 @@ public class Game implements java.io.Serializable
 	{
 		int highest = 0;
 		for(int col = 0; col < board.getNumCols(); col++)
-		{
 			for(int row = 0; row < board.getNumRows(); row++)
 			{
 				if(board.get(new Location(row, col)) > highest)
 					highest = board.get(new Location(row, col));
 			}
-		}
+		
 		return highest;
 	}
 	
