@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -13,6 +14,7 @@ public class Save
 {
 	public static final String SAVEGAMELOCATION = "savegame.txt";
 	public static final String HIGHSCORELOCATION = "highscore.txt";
+	public static final String KEYMAPLOCATION = "keymap.txt";
 	
 	/**
 	 * Saves the current game to a file. Overwrites any previous saves.
@@ -111,4 +113,36 @@ public class Save
 		
 		return highScore;
 	}
+	
+	
+	public static HashMap<Character, Integer> loadKeyMap() throws IOException, ClassNotFoundException //, ClassCastException
+	{
+		File file = new File(KEYMAPLOCATION);
+		
+		FileInputStream fi = new FileInputStream(file);
+		ObjectInputStream input = new ObjectInputStream(fi);
+		
+		HashMap<Character, Integer> keyMap = (HashMap<Character, Integer>) input.readObject();
+		
+		fi.close();
+		input.close();
+		
+		return keyMap;
+	}
+	
+	public static void saveKeyMap(HashMap<Character, Integer> keyMap) throws IOException
+	{
+		File file = new File(KEYMAPLOCATION);
+		
+		// Serialize the game
+		FileOutputStream fop = new FileOutputStream(file);
+		ObjectOutputStream output = new ObjectOutputStream(fop);
+		
+		// Write the game to the file
+		output.writeObject(keyMap);
+	
+		output.close();
+		fop.close();
+	}
+	
 }

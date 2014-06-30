@@ -7,15 +7,24 @@
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 public class Main
 {
 	// All methods can use the scanner without declaring it each time
 	private static Scanner scan = new Scanner (System.in);
+	
+	// Enter the character that the user entered
+	// Get the direction back that they want to move
+	// Currently only works for up,right,down,left
+	private static HashMap<Character,Integer> keyMap = new HashMap<Character,Integer>();
 
 	public static void main(String[] args)
 	{	
+		//customizeKeyMap();
+		//loadKeyMap();
+		
 		int input = -1;
 		do
 		{
@@ -183,7 +192,15 @@ public class Main
 				// Quit
 				else if(direction.charAt(0) == 'q')
 					game.quit();
-
+				
+				// If the game is moving up,right,down,or left
+				else if(keyMap.containsKey(direction.charAt(0)))
+				{
+					game.act(keyMap.get(direction.charAt(0)));
+				}
+				
+				
+				/*
 				// W or U to move up
 				else if(direction.charAt(0) == 'u' || direction.charAt(0) == 'w')
 					game.act(Location.UP);
@@ -199,6 +216,7 @@ public class Main
 				// L or A to move left
 				else if(direction.charAt(0) == 'l' || direction.charAt(0) == 'a')
 					game.act(Location.LEFT);
+				*/
 
 				else
 				{
@@ -503,6 +521,67 @@ public class Main
 		Autoplay.recursivePlay(game, game, tile, true);
 		System.out.println("**** GAME WON ****");
 		System.out.println("Total Number of Moves: " + Autoplay.getAutoMoveCount());
+	}
+	
+	
+	private static void loadKeyMap()
+	{
+		try
+		{
+			keyMap = Save.loadKeyMap();
+		} 
+		catch (IOException e)
+		{
+			System.err.println("Can not access file");
+		}
+		catch (ClassNotFoundException e)
+		{
+			System.err.println("Can not read file");
+		}
+		finally
+		{
+			if(keyMap == null)
+			{
+				// Create the default key mapping
+				keyMap = new HashMap<Character, Integer>();
+				
+				keyMap.put('u', Location.UP);
+				keyMap.put('r', Location.RIGHT);
+				keyMap.put('d', Location.DOWN);
+				keyMap.put('l', Location.LEFT);
+			}
+		}
+	}
+	
+	private static void customizeKeyMap()
+	{
+		char input;
+		
+		System.out.println("UP");
+		input = scan.next().charAt(0);
+		keyMap.put(input, Location.UP);
+		
+		System.out.println("RIGHT");
+		input = scan.next().charAt(0);
+		keyMap.put(input, Location.RIGHT);
+		
+		System.out.println("DOWN");
+		input = scan.next().charAt(0);
+		keyMap.put(input, Location.DOWN);
+		
+		System.out.println("LEFT");
+		input = scan.next().charAt(0);
+		keyMap.put(input, Location.LEFT);
+		
+		try
+		{
+			Save.saveKeyMap(keyMap);
+		} 
+		catch (IOException e)
+		{
+			System.err.println("Error: Save file cannot be accesed");
+			e.printStackTrace();
+		}
 	}
 	
 	/**
