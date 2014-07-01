@@ -22,8 +22,7 @@ public class Main
 
 	public static void main(String[] args)
 	{	
-		//customizeKeyMap();
-		//loadKeyMap();
+		loadKeyMap();
 		
 		int input = -1;
 		do
@@ -70,8 +69,9 @@ public class Main
 			System.out.println("\t5x5 grid, with every mode enabled");
 			System.out.println("11. Custom Game");
 			System.out.println("12. Autoplay");
+			System.out.println("13. Settings");
 
-			input = getIntegerInput(1, 12, "Incorrect input. Enter 1 through 12 with no punctuation");
+			input = getIntegerInput(1, 13, "Incorrect input. Enter 1 through 12 with no punctuation");
 
 			switch(input)
 			{
@@ -99,6 +99,8 @@ public class Main
 						break;
 				case 12: autoplayMode(new Game());
 						break;
+				case 13: customizeKeyMap();
+					break;
 			}
 
 			System.out.println("Play again? y/n");
@@ -523,7 +525,10 @@ public class Main
 		System.out.println("Total Number of Moves: " + Autoplay.getAutoMoveCount());
 	}
 	
-	
+	/**
+	 * Loads the saved HashMap that stores the controls
+	 * Assigns it to the global variable keyMap
+	 */
 	private static void loadKeyMap()
 	{
 		try
@@ -557,19 +562,22 @@ public class Main
 	{
 		char input;
 		
-		System.out.println("UP");
+		System.out.println("Customizing Input");
+		System.out.println("Type the key that you want to use");
+		
+		System.out.print("UP ");
 		input = scan.next().charAt(0);
 		keyMap.put(input, Location.UP);
 		
-		System.out.println("RIGHT");
+		System.out.print("RIGHT ");
 		input = scan.next().charAt(0);
 		keyMap.put(input, Location.RIGHT);
 		
-		System.out.println("DOWN");
+		System.out.print("DOWN ");
 		input = scan.next().charAt(0);
 		keyMap.put(input, Location.DOWN);
 		
-		System.out.println("LEFT");
+		System.out.print("LEFT ");
 		input = scan.next().charAt(0);
 		keyMap.put(input, Location.LEFT);
 		
