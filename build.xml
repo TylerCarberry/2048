@@ -11,15 +11,15 @@
 
     <target name="jar">
         <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/HelloWorld.jar" basedir="build/classes">
+        <jar destfile="build/jar/Main.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="oata.HelloWorld"/>
+                <attribute name="Main-Class" value="oata.Main"/>
             </manifest>
         </jar>
     </target>
 
     <target name="run">
-        <java jar="build/jar/HelloWorld.jar" fork="true"/>
+        <java jar="build/jar/Main.jar" fork="true"/>
     </target>
 
 </project>
