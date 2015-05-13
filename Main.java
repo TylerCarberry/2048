@@ -669,5 +669,4 @@ public class Main
 			}
 		}
 	}
-	
 }
